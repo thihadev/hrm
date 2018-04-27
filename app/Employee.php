@@ -9,11 +9,8 @@ use App\Designation;
 class Employee extends Model
 {
 
-    protected $fillable = ["avatar", "name", "email", "password", "age", "phone", "address", "dateofbirth", "department_id", "designation_id",  "joined"];
+    protected $fillable = ["photo", "name", "email", "age", "phone", "address", "dateofbirth", "department_id", "designation_id", "joined"];
 
-       protected $hidden = [
-        'password', 'remember_token',
-    ];
 
 public function Department() 
     {

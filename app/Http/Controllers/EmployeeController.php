@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
+use Yajra\Datatables\Datatables;
 use Illuminate\Http\File;
 use App\Department;
 use App\Designation;
 use App\Employee;
+use Image;
 
 class EmployeeController extends Controller
 {
@@ -23,13 +26,14 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        // $employees = DB::table('employees')
-        // ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
-        // ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
-        // ->select('employees.*', 'department.name as department_name', 'department.id as department_id', 'division.name as division_name', 'division.id as division_id')
-        // ->paginate(5);
-        $employees = Employee::paginate(5);
-        return view("Employee.index", ['employees' => $employees]);
+
+        $employees = DB::table('employees')
+        ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
+        ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
+        ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' )
+        ->paginate(5);
+        // $employees = Employee::paginate(5);
+        return view("Employee.index",['employees' => $employees]);
     }
 
     /**
@@ -39,7 +43,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        $employees = Employee::all();
         $departments = Department::all();
         $designations = Designation::all();
         return view('Employee.create', ['departments' => $departments, 'designations' => $designations]);
@@ -54,21 +58,21 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        // $employees = Employee::all();
         // $this->validateInput($request);
         // // Upload image
-        // //$path = $request->file('avatar')->store('avatars');
-        // $keys = ['name', 'email', 'password', 'age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
-        // $input = $this->createQueryInput($keys, $request);
-        // //$input['avatar'] = $path;
-        // // Not implement yet
-        // // $input['company_id'] = 0;
 
+        // $path = $request->file('avatar')->store('public');
+        // $keys = ['name', 'email','age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
+        // $input = $this->createQueryInput($keys, $request);
+        // $input['avatar'] = $path;
         // Employee::create($input);
-        $request-> validate ([
-            'avatar' => 'required',
+        // return view('Employee.index', compact('employees', 'avatar'));
+
+            $request-> validate ([
+            'photo' => 'required',
             'name' => 'required|min:3',
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
             'age' => 'required|integer',
             'phone' => 'required',
             'address' => 'required',
@@ -78,11 +82,26 @@ class EmployeeController extends Controller
             'joined' => 'required'
         ]);
 
-        $file = $request->file('avatar');
-        Storage::put($file, 'public/','avatars');
+
+        $employees = DB::table('employees');
+
+        if($request->hasFile('photo')){
+            $photo = $request->file('photo');
+            $filename = time(). '.'. $request->file('photo')->getClientOriginalExtension();
+            Image::make($photo)->resize(300, 300)->save( public_path('/uploads/photos/' . $filename ) );
+
+            $employees = Employee::all();
+            $employees->photo = $filename;
+            // $employees->save();
+        }
         Employee::create($request->except('_token'));
-        return view('Employee.index');
+        return view('Employee.store', compact('employees'));
+
     }
+
+        // $request->file('avatar');
+        // Storage::put('public/image', $request->file('avatar'));
+        // Employee::create($request->except('_token'));
 
     /**
      * Display the specified resource.
@@ -115,7 +134,20 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // $employee = Employee::findOrFail($id);
+        // $this->validateInput($request);
+        // // Upload image
+        // $keys = ['name', 'email', 'age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
+        // $input = $this->createQueryInput($keys, $request);
+        // if ($request->file('avatar')) {
+        //     $path = $request->file('avatar')->store('public');
+        //     $input['avatar'] = $path;
+        // }
+
+        // Employee::where('id', $id)
+        //     ->update($input);
+
+          
     }
 
     /**
@@ -131,35 +163,76 @@ class EmployeeController extends Controller
 
 
     // public function load($name) {
-    //      $path = storage_path().'/public/avatars/'.$name;
+    //      $path = storage_path().'/public/'.$name;
     //     if (file_exists($path)) {
     //         return Response::download($path);
     //     }
     // }
 
-    // private function validateInput($request) {
-    //     $this->validate($request, [
-    //         'avatar' => 'required',
-    //         'name' => 'required|min:3',
-    //         'email' => 'required|email',
-    //         'password' => 'required|string|min:6',
-    //         'age' => 'required|integer',
-    //         'phone' => 'required',
-    //         'address' => 'required',
-    //         'dateofbirth' => 'required',
-    //         'department_id' => 'required',
-    //         'designation_id' => 'required',
-    //         'joined' => 'required'
-    //     ]);
-    // }
+    private function validateInput(Request $request) {
+        $this->validate($request, [
+            'photo' => 'required',
+            'name' => 'required|min:3',
+            'email' => 'required|email',
+            'age' => 'required|integer',
+            'phone' => 'required',
+            'address' => 'required',
+            'dateofbirth' => 'required',
+            'department_id' => 'required',
+            'designation_id' => 'required',
+            'joined' => 'required'
+        ]);
+        // $path = $request->file('avatar')->put('avatars');
+    }
 
-    // public function createQueryInput($keys, $request) {
-    //     $queryInput = [];
-    //     for($i = 0; $i < sizeof($keys); $i++) {
-    //         $key = $keys[$i];
-    //         $queryInput[$key] = $request[$key];
+    private function createQueryInput($keys, $request) {
+        $queryInput = [];
+        for($i = 0; $i < sizeof($keys); $i++) {
+            $key = $keys[$i];
+            $queryInput[$key] = $request[$key];
+        }
+
+        return $queryInput;
+    }
+
+     public function data(Request $request) {
+        if($request->ajax()) {
+
+            $model = Employee::query();
+            return Datatables::of($model)        
+            ->addColumn("edit", function($model) {
+                    $data = "<a class='btn btn-success' href=" . route("emp.edit", $model->id) . ">Edit</a>";
+                    return $data;
+                })
+            ->addColumn("delete", function($model) {
+                    $data = '<form action="' . route('emp.destroy', $model->id). '" method="post">'
+                                . csrf_field() .
+                                 method_field("delete") .
+                                '<button class="btn btn-danger">Delete</button>
+                            </form>';
+                    return $data;
+                })
+            ->rawColumns(['edit', 'delete'])
+            ->toJson();
+        }
+        return abort(404);
+    }
+
+    //     public function upload(Request $request){
+
+    //     // Handle the user upload of avatar
+    //         $employees = Employee::all();
+    //     if($request->hasFile('myphoto')){
+    //         $avatar = $request->file('myphoto');
+    //         $filename = time() . '.' . $avatar->getClientOriginalExtension();
+    //         Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/photos/' . $filename ) );
+
+    //         $employees = Auth::user();
+    //         $employees->avatar = $filename;
+    //         $employees->save();
     //     }
 
-    //     return $queryInput;
+    //     return view('Employee.index', compact('employees'));
+
     // }
 }

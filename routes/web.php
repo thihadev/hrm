@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MessagePosted;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,12 +16,43 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Chat room route
 Route::get('/chat', function() {
 	return view('chat');
-});
+})->middleware('auth');
+
+// Route::get('/messages', 'ChatController@getMessages')->middleware('auth');
+// Route::post('/messages', 'ChatController@postMessages')->middleware('auth');
+Route::get('/chat', 'ChatController@index')->middleware('auth');
+
+//chat username route
+// Route::get('/username', 'UsernameController@show')->middleware('auth');
+
+Route::get('/messages', function() {
+	return App\Message::with('user')->get();
+})->middleware('auth');
+
+Route::post('/messages', function() {
+	$user = Auth::user();
+	$user->messages()->create([
+		'message' => $request()->get('message')
+	]);
+	return ['status' => 'OK'];
+})->middleware('auth');
+
+
+//event(new MessagePosted($message, $user));
+
 
 Auth::routes();
 
+Route::get('/home', 'HomeController@index')->name('home');
+
+//users profile
+Route::get('profile', 'UserController@profile');
+Route::post('profile', 'UserController@update_avatar');
+
+//login & logout route
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
@@ -35,16 +67,27 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+//Changepassword route
 Route::get('/changePassword', 'HomeController@showChangePasswordForm');
 Route::post('/changePassword', 'HomeController@changePassword')->name('changePassword');
 
-Route::get('/home', 'HomeController@index')->name('home');
 
+//test
 Route::get('/admin', 'AdminController@index');
 Route::get('/superadmin', 'SuperAdminController@index');
 
-Route::resource("emp", 'EmployeeController');
+//Employee Route
+Route::get('emp', 'EmployeeController@index')->name('emp.index');
+Route::get('emp/create', 'EmployeeController@create')->name('emp.create');
+Route::post('emp/store', 'EmployeeController@store')->name('emp.store');
+Route::get("emp-data", "EmployeeController@data")->name("emp.data");
+Route::get('avatars/{name}', 'EmployeeController@load');
+// Route::get('/Employee/create-step1', 'EmployeeController@createStep1');
+// Route::post('/Employee/create-step1', 'EmployeeController@postCreateStep1');
 
+//Department & position route
 Route::resource("dep", 'DepartmentController');
 Route::resource("des", 'DesignationController');
+
+
 

@@ -1,11 +1,11 @@
-@extends ('layouts.admindashboard')
+@extends ('dashboard')
 
-@section('content')
+@section('action-content')
 <h1> Hello from Designation</h1><br>
-<!-- 	<a href="{{route('dep.create')}}">
+	<a href="{{route('des.create')}}">
 		<button class="btn-btn primary">
-			Create dep
+			Create des
 	</button>
-</a> -->
+</a>
 
 @endsection

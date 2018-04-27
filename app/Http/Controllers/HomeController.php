@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Employee;
+use App\Designation;
+use App\Department;
 
 class HomeController extends Controller
 {
@@ -56,6 +60,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+
+        $employees = Employee::count();
+        return view('home', ['employees' => $employees]);
+            // compact('employees'));
+    }
+
+        public function create()
+    {
+
+        $employees = Employee::count();
+        return view('home', ['employees' => $employees]);
+            // compact('employees'));
     }
 }

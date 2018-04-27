@@ -16,10 +16,10 @@ class CreateEmployeesTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
 
             $table->increments('id');
-            $table->string('avatar')->default('user.jpg');
+            $table->string('photo')->default('default.jpg');
             $table->string('name');
             $table->string('email');
-            $table->string('password');
+            // $table->string('password');
             $table->integer('age');
             $table->string('phone');
             $table->text('address');
@@ -29,9 +29,7 @@ class CreateEmployeesTable extends Migration
             // $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
             // $table->foreign('designation_id')->references('id')->on('designations')->onDelete('cascade')->onUpdate('cascade');
             $table->date('joined');
-            $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();
         });
         
     }

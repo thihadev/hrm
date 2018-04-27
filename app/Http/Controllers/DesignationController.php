@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Employee;
+use App\Designation;
+use Auth;
 
 class DesignationController extends Controller
 {
@@ -13,7 +16,8 @@ class DesignationController extends Controller
      */
     public function index()
     {
-        return view('Designation.index');
+        $designations = Designation::paginate(5);
+        return view('Designation.index', ['designations' => $designations]);
     }
 
     /**
@@ -23,7 +27,8 @@ class DesignationController extends Controller
      */
     public function create()
     {
-        //
+        $employees = Employee::all();
+        return view('Designation.create',  array('user' => Auth::user()));
     }
 
     /**
@@ -34,7 +39,12 @@ class DesignationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validateInput($request);
+         Designation::create([
+            'name' => $request['name']
+        ]);
+
+        return view('Designation.index');
     }
 
     /**
@@ -80,5 +90,11 @@ class DesignationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function validateInput($request) {
+        $this->validate($request, [
+        'name' => 'required|max:60|unique:departments'
+    ]);
     }
 }

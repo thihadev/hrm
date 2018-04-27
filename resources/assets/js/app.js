@@ -18,9 +18,47 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('chat-message', require('./components/ChatMessage.vue'));
 Vue.component('chat-log',require('./components/ChatLog.vue'));
-Vue.component('chat-list',require('./components/ChatList.vue'));
-Vue.component('chat-create',require('./components/ChatCreate.vue'));
+Vue.component('chat-composer',require('./components/ChatComposer.vue'));
+// Vue.component('chat-list',require('./components/ChatList.vue'));
+// Vue.component('chat-create',require('./components/ChatCreate.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+
+    data: {
+    		messages: [],
+			roomCount: []
+    },
+    methods: {
+    	addMessage(message) {
+    		this.messages.push(message);
+
+    		axios.post('/messages', message).then(response => {
+
+    		});
+    	}
+    },
+    created() {
+    	axios.get('/messages').then(response => {
+    		this.messages = response.data;
+    	});
+
+
+  //   	Echo.join('chatroom')
+		// 	.here((users) => {
+		// 			this.roomCount = users;
+		// 		})
+		// 	.joining((user) => {
+		// 			this.roomCount.push(user);
+		// 		})
+		// 	.leaving((user) => {
+		// 			this.roomCount = this.roomCount.filter(u => u != user);
+		// 		})
+		// 	.listen('MessagePosted', (e) => {
+		// 			this.messages.push({
+		// 			message: e.message.message,
+		// 			user: e.user
+		// 		});
+		// });
+    }
 });
