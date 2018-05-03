@@ -33,7 +33,7 @@ class User extends Authenticatable
                     // ->withTimestamps();
     }
 
-    public function messages() {
+    public function Message() {
         return $this->hasMany(Message::class);
     }
 

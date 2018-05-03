@@ -8,6 +8,7 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{{ asset('css/admindashboard.css') }}"> 
   <link rel="stylesheet" href="{{ asset('css/dataTables.css') }}"> 
+  
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -20,11 +21,9 @@
 <div class="wrapper">
 
   <!-- Main Header  -->
-
       @include('layouts.header')
      
       <!-- Sidebar -->
-
        @include('layouts.sidebar')
        
   <!-- Content Wrapper. Contains page content -->
@@ -37,6 +36,7 @@
 </div>
 <script type="text/javascript" src="{{ asset('js/admindashboard.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/dataTables.js') }}"></script>
+@stack('scripts')
 <script>
   $(document).ready(function() {
 

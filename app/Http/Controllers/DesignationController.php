@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use App\Employee;
 use App\Designation;
 use Auth;
@@ -97,4 +98,28 @@ class DesignationController extends Controller
         'name' => 'required|max:60|unique:departments'
     ]);
     }
+
+    public function data(Request $request) {
+        if($request->ajax()) {
+
+            $model = Designation::all();
+            return Datatables::of($model)
+                ->addColumn("edit", function($model) {
+                    $data = "<a class='btn btn-success' href=" . route("des.edit", $model->id) . ">Edit</a>";
+
+                    return $data;
+                })
+            ->addColumn("delete", function($model) {
+                    $data = '<form action="' . route('des.destroy', $model->id). '" method="post">'
+                                . csrf_field() .
+                                 method_field("delete") .
+                                '<button class="btn btn-danger">Delete</button>
+                            </form>';
+                    return $data;
+                })
+            ->rawColumns(['edit', 'delete'])
+            ->toJson();
+        }
+        return abort('404');
+}
 }

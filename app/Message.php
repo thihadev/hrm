@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-	protected $fillable = ['message', 'user_id'];
+	protected $fillable = ['message'];
 
-    public function user() 
+    public function User() 
     {
     	return $this->belongsTo(User::class);
     }
 
-    public function scopeMostRecent($query) 
-    {
-		return $query->orderBy('created_at', 'desc')->limit(10);
-	}
+ //    public function scopeMostRecent($query) 
+ //    {
+	// 	return $query->orderBy('created_at', 'desc')->limit(10);
+	// }
 }

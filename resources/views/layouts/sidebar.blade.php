@@ -4,7 +4,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="uploads/avatars/{{ Auth::user()->avatar }}" class="img-circle" alt="User Image">
+          <img src="/uploads/avatars/{{ Auth::user()->avatar }}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>{{Auth::user()->name}}</p>
@@ -41,6 +41,19 @@
             <li><a href="#"><i class="fa fa-circle-o"></i> Salary</a></li>
             <li class="active"><a href="{{route('des.index')}}"><i class="fa fa-circle-o"></i> Designation </a></li>
             <li><a href="{{route('dep.index')}}"><i class="fa fa-circle-o"></i> Department </a></li>
+          </ul>
+        </li>
+
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-comments"></i>
+            <span>Chat Room</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/chat"><i class="fa fa-circle-o"></i> Chat </a></li>
           </ul>
         </li>
        

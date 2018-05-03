@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use App\Department;
 use App\Employee;
 
@@ -64,7 +65,9 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $departments = Department::find($id);
+        return view('Department.edit', compact("departments"));
+
     }
 
     /**
@@ -76,8 +79,13 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        request()->validate([
+        'name' => 'required',
+
+        ]);
+        Department::find($id)->update($request->all());
+        return redirect()->route('dep.index')
+                        ->with('success','Department updated successfully');    }
 
     /**
      * Remove the specified resource from storage.
@@ -95,4 +103,51 @@ class DepartmentController extends Controller
         'name' => 'required|max:60|unique:departments'
     ]);
     }
+
+//     public function data(Request $request) {
+//         if($request->ajax()) {
+
+//             $model = Department::all();
+//             return Datatables::of($model)
+//                 ->addColumn("edit", function($model) {
+//                     $data = "<a class='btn btn-success' href=" . route("dep.edit", $model->id) . ">Edit</a>";
+//                     return $data;
+//                 })
+//             ->addColumn("delete", function($model) {
+//                     $data = '<form action="' . route('dep.destroy', $model->id). '" method="post">'
+//                                 . csrf_field() .
+//                                  method_field("delete") .
+//                                 '<button class="btn btn-danger">Delete</button>
+//                             </form>';
+//                     return $data;
+//                 })
+//             ->rawColumns(['edit', 'delete'])
+//             ->toJson();
+//         }
+//         return abort('404');
+// }
+
+    public function data(Request $request) {
+        if($request->ajax()) {
+
+            $model = Department::all();
+            return Datatables::of($model)
+                ->addColumn("edit", function($model) {
+                    $data = "<a class='btn btn-success' href=" . route("dep.edit", $model->id) . ">Edit</a>";
+
+                    return $data;
+                })
+            ->addColumn("delete", function($model) {
+                    $data = '<form action="' . route('dep.destroy', $model->id). '" method="post">'
+                                . csrf_field() .
+                                 method_field("delete") .
+                                '<button class="btn btn-danger">Delete</button>
+                            </form>';
+                    return $data;
+                })
+            ->rawColumns(['edit', 'delete'])
+            ->toJson();
+        }
+        return abort('404');
+}
 }

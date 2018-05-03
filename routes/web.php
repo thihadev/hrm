@@ -77,17 +77,21 @@ Route::get('/admin', 'AdminController@index');
 Route::get('/superadmin', 'SuperAdminController@index');
 
 //Employee Route
-Route::get('emp', 'EmployeeController@index')->name('emp.index');
-Route::get('emp/create', 'EmployeeController@create')->name('emp.create');
-Route::post('emp/store', 'EmployeeController@store')->name('emp.store');
+Route::resource('emp', 'EmployeeController');
+// Route::get('emp', 'EmployeeController@index')->name('emp.index');
+// Route::get('emp/create', 'EmployeeController@create')->name('emp.create');
+// Route::post('emp/store', 'EmployeeController@store')->name('emp.store');
 Route::get("emp-data", "EmployeeController@data")->name("emp.data");
-Route::get('avatars/{name}', 'EmployeeController@load');
+// Route::get('avatars/{name}', 'EmployeeController@load');
 // Route::get('/Employee/create-step1', 'EmployeeController@createStep1');
 // Route::post('/Employee/create-step1', 'EmployeeController@postCreateStep1');
 
 //Department & position route
 Route::resource("dep", 'DepartmentController');
+Route::get("dep-data", 'DepartmentController@data')->name('dep.data');
+
 Route::resource("des", 'DesignationController');
+Route::get("des-data", 'DesignationController@data')->name('des.data');
 
 
 

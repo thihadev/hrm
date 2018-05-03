@@ -6,12 +6,11 @@
 		<button class="btn-btn primary">
 			Create emp
 	</button>
-</a>
-<div class="box">
+</a>	
+	<div class="box">
         <div class="box-header with-border">
           <h3 class="box-title">Employee Information</h3>
-
-          <div class="box-tools pull-right">
+  			<div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
             <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
@@ -19,13 +18,11 @@
           </div>
         </div>
         <div class="box-body">
-        	@if($employees->count() == 0)
-			<h1>No Blog Data</h1>
-			@else
-           <table class="table table-bordered" id="roles-table">
+           <table class="table table-bordered" id="emp-table">
 					<thead>
-						<tr>													
-							<th style="width:20%;">Name</th>
+						<tr>								
+							<th>Photo</th>											
+							<th>Name</th>
 							<th>Email</th>
 							<th>Age</th>
 							<th>Mobile</th>
@@ -34,11 +31,56 @@
 							<th>Department</th>
 							<th>Designation</th>
 							<th>Join Date</th>
-							<th class="text-right">Action</th>
+							<th>Action</th>
+							<!-- <th></th> -->
+							
 						</tr>
 					</thead>
 					
-					<tbody>
+					</table>
+		        </div>
+	
+
+        <!-- /.box-body -->
+        <div class="box-footer">
+          Footer
+        </div>
+    </div>
+        <!-- /.box-footer-->
+      <!-- /.box -->
+@endsection
+@push('scripts')
+<script>
+$(function() {
+    $('#emp-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('emp.data') !!}',
+        columns: [
+            { data: 'photo', name: 'photo',
+            	render: function (data, url) {
+            		return "<img height=50 width=50 src='/uploads/photos/' />";
+            	}
+             },
+            { data: 'name', name: 'name' },
+            { data: 'email', name: 'email' },
+            { data: 'age', name: 'age' },
+            { data: 'phone', name: 'phone'},
+            { data: 'address', name: 'address' },
+            { data: 'dateofbirth', name: 'dateofbirth' },
+            { data: 'department_id', name: 'department_id' },
+            { data: 'designation_id', name: 'designation_id' },
+            { data: 'joined', name: 'joined' },
+            { data: 'action' ,name: 'action'}
+            // { data: 'delete', name: 'edit'}         
+        ]
+    });
+});
+</script>
+@endpush
+
+<!-- 
+						 <tbody>
 						@foreach ($employees as $employee)
 						<tr>
 							<td>
@@ -65,36 +107,4 @@
 							</td>
 							</tr>
 							@endforeach
-						</tbody>
-						
-					</table>
-					@endif
-					{{ $employees->links() }} 
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-          Footer
-        </div>
-        <!-- /.box-footer-->
-      </div>
-      <!-- /.box -->
-@endsection
-@push('scripts')
-<script>
-$(function() {
-    $('#roles-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{!! route('emp.data') !!}',
-        columns: [
-            { data: 'avatar', name: 'avatar' },
-            { data: 'name', name: 'name' },
-            { data: 'email', name: 'emial' },
-            { data: 'age', name: 'age' },
-            { data: 'delete', name: 'delete'}
-            
-        ]
-    });
-});
-</script>
-@endpush
+						</tbody> -->

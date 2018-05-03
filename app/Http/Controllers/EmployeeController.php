@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
-use Illuminate\Http\File;
 use App\Department;
 use App\Designation;
 use App\Employee;
@@ -26,6 +25,8 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        // $employees = Employee::paginate(5);
+        // return view("Employee.index", compact("employees"));
 
         $employees = DB::table('employees')
         ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
@@ -87,14 +88,13 @@ class EmployeeController extends Controller
 
         if($request->hasFile('photo')){
             $photo = $request->file('photo');
-            $filename = time(). '.'. $request->file('photo')->getClientOriginalExtension();
-            Image::make($photo)->resize(300, 300)->save( public_path('/uploads/photos/' . $filename ) );
+            $filename = $photo->getClientOriginalName();
+            Image::make($photo)->resize(300, 300)->save('uploads/photos/'. $filename );
 
-            $employees = Employee::all();
-            $employees->photo = $filename;
+            $employees->photo = $photo;
             // $employees->save();
         }
-        Employee::create($request->except('_token'));
+        Employee::create($request->all());
         return view('Employee.store', compact('employees'));
 
     }
@@ -122,7 +122,8 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $employees = Employee::find($id);
+        return view('emp.edit', compact('employees'));
     }
 
     /**
@@ -158,7 +159,15 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $employees = Employee::findOrFail($id);
+        Employee::destroy($id);
+
+        return redirect()->route("emp.index", "Successful Deleted");
+        // $products = Product::findOrFail($id);
+        // if(\Auth::user()->can('delete-products', $products)) {
+        //     Product::destroy($id);
+        // }
+        // return redirect()->route("product.index");    
     }
 
 
@@ -169,21 +178,21 @@ class EmployeeController extends Controller
     //     }
     // }
 
-    private function validateInput(Request $request) {
-        $this->validate($request, [
-            'photo' => 'required',
-            'name' => 'required|min:3',
-            'email' => 'required|email',
-            'age' => 'required|integer',
-            'phone' => 'required',
-            'address' => 'required',
-            'dateofbirth' => 'required',
-            'department_id' => 'required',
-            'designation_id' => 'required',
-            'joined' => 'required'
-        ]);
-        // $path = $request->file('avatar')->put('avatars');
-    }
+    // private function validateInput(Request $request) {
+    //     $this->validate($request, [
+    //         'photo' => 'required',
+    //         'name' => 'required|min:3',
+    //         'email' => 'required|email',
+    //         'age' => 'required|integer',
+    //         'phone' => 'required',
+    //         'address' => 'required',
+    //         'dateofbirth' => 'required',
+    //         'department_id' => 'required',
+    //         'designation_id' => 'required',
+    //         'joined' => 'required'
+    //     ]);
+    //     // $path = $request->file('avatar')->put('avatars');
+    // }
 
     private function createQueryInput($keys, $request) {
         $queryInput = [];
@@ -198,25 +207,23 @@ class EmployeeController extends Controller
      public function data(Request $request) {
         if($request->ajax()) {
 
-            $model = Employee::query();
-            return Datatables::of($model)        
-            ->addColumn("edit", function($model) {
-                    $data = "<a class='btn btn-success' href=" . route("emp.edit", $model->id) . ">Edit</a>";
-                    return $data;
-                })
-            ->addColumn("delete", function($model) {
-                    $data = '<form action="' . route('emp.destroy', $model->id). '" method="post">'
-                                . csrf_field() .
-                                 method_field("delete") .
-                                '<button class="btn btn-danger">Delete</button>
-                            </form>';
-                    return $data;
-                })
-            ->rawColumns(['edit', 'delete'])
-            ->toJson();
-        }
-        return abort(404);
+            $model = Employee::all();
+            return Datatables::of($model)
+                ->addColumn("action", function($model) {
+                    $data = '<a href="'.route("emp.edit", $model->id).'"><button class="btn"><i class="fa fa-pencil"></i></button>
+                            <a href="'.route("emp.destroy", $model->id).'">
+                            '.csrf_field().'
+                            '. method_field('delete').'
+                            <button class="btn"><i class="fa fa-trash"></i></button>';
+                            return $data;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
+    return abort(404);
+}
+
+}
 
     //     public function upload(Request $request){
 
@@ -235,4 +242,29 @@ class EmployeeController extends Controller
     //     return view('Employee.index', compact('employees'));
 
     // }
-}
+
+
+
+
+
+        //     ->addColumn("edit", function($model) {
+        //             $data = "<a class='btn btn-success' href=" . route("emp.edit", $model->id) . ">Edit</a>";
+        //             return $data;
+        //         })
+        //     ->addColumn("delete", function($model) {
+        //             $data = '<form action="' . route('emp.destroy', $model->id). '" method="post">'
+        //                         . csrf_field() .
+        //                          method_field("delete") .
+        //                         '<button class="btn btn-danger">Delete</button>
+        //                     </form>';
+        //             return $data;
+        //         })
+        //     ->rawColumns(['edit', 'delete'])
+        //     ->toJson();
+        // }
+        // 
+            
+// <ul class="dropdown-menu pull-right">
+//                                         <li><a href="#" data-toggle="modal" data-target="#edit_employee"><i class="fa fa-pencil m-r-5"></i> Edit</a></li>
+//                                         <li><a href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a></li>
+//                                     </ul>
