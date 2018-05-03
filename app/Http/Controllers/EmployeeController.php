@@ -159,10 +159,14 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        $employees = Employee::findOrFail($id);
-        Employee::destroy($id);
 
-        return redirect()->route("emp.index", "Successful Deleted");
+        Employee::find($id)->delete();
+        return redirect()->route('emp.index')
+                        ->with('success', "Employee info Deleted Successful");
+        // $employees = Employee::findOrFail($id);
+        // Employee::destroy($id);
+
+        // return redirect()->route("emp.index", "Successful Deleted");
         // $products = Product::findOrFail($id);
         // if(\Auth::user()->can('delete-products', $products)) {
         //     Product::destroy($id);
@@ -210,11 +214,12 @@ class EmployeeController extends Controller
             $model = Employee::all();
             return Datatables::of($model)
                 ->addColumn("action", function($model) {
-                    $data = '<a href="'.route("emp.edit", $model->id).'"><button class="btn"><i class="fa fa-pencil"></i></button>
-                            <a href="'.route("emp.destroy", $model->id).'">
-                            '.csrf_field().'
-                            '. method_field('delete').'
-                            <button class="btn"><i class="fa fa-trash"></i></button>';
+                    $data = '<a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button>
+                            <form action="' . route('emp.destroy', $model->id). '" method="post">'
+                                . csrf_field() .
+                                 method_field("delete") .
+                                '<button class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                            </form>';
                             return $data;
             })
             ->rawColumns(['action'])

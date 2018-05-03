@@ -21,8 +21,8 @@ Route::get('/chat', function() {
 	return view('chat');
 })->middleware('auth');
 
-// Route::get('/messages', 'ChatController@getMessages')->middleware('auth');
-// Route::post('/messages', 'ChatController@postMessages')->middleware('auth');
+// Route::get('/chat', 'ChatController@getMessages')->middleware('auth');
+// Route::post('/chat', 'ChatController@postMessages')->middleware('auth');
 Route::get('/chat', 'ChatController@index')->middleware('auth');
 
 //chat username route
@@ -41,7 +41,7 @@ Route::post('/messages', function() {
 })->middleware('auth');
 
 
-//event(new MessagePosted($message, $user));
+// event(new MessagePosted($message, $user));
 
 
 Auth::routes();
