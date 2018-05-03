@@ -28,7 +28,7 @@ class EmployeeController extends Controller
         // $employees = Employee::paginate(5);
         // return view("Employee.index", compact("employees"));
 
-        $employees = DB::table('employees')
+        $employees = DB::table('employees') 
         ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
         ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
         ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' )
@@ -95,7 +95,8 @@ class EmployeeController extends Controller
             // $employees->save();
         }
         Employee::create($request->all());
-        return view('Employee.store', compact('employees'));
+        return view('Employee.index', compact('employees'))
+                    ->with('success', "Successful Registered");
 
     }
 
@@ -209,17 +210,19 @@ class EmployeeController extends Controller
     }
 
      public function data(Request $request) {
+
         if($request->ajax()) {
 
-            $model = Employee::all();
+            $model = Employee::latest();
+
             return Datatables::of($model)
                 ->addColumn("action", function($model) {
-                    $data = '<a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button>
-                            <form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>'.
+                            '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
-                            </form>';
+                            </form></div>';
                             return $data;
             })
             ->rawColumns(['action'])

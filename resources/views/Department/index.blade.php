@@ -21,7 +21,8 @@
         <div class="box-body">
            <table class="table table-bordered" id="dep-table">
 					<thead>
-						<tr>									
+						<tr>
+              <th>No</th>						
 							<th>Name</th>
 							<th>Action</th>
 							<th></th>
@@ -48,10 +49,13 @@ $(function() {
         serverSide: true,
         ajax: '{!! route('dep.data') !!}',
         columns: [
+            {  data: "id",
+    render: function (data, type, row, meta) {
+        return meta.row + meta.settings._iDisplayStart + 1;
+    }
+},
             { data: 'name', name: 'name' },
-            // { data: 'action' ,name: 'action'}
-            { data: 'edit', name: 'edit'},
-            { data: 'delete', name: 'delete'}
+            { data: 'action' ,name: 'action'}
         ]
     });
 });

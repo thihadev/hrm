@@ -20,23 +20,20 @@
         <div class="box-body">
            <table class="table table-bordered" id="emp-table">
 					<thead>
-						<tr>								
-							<th>Photo</th>											
+						<tr>	
+							<th>No</th>		
+							<th>Photo</th>
 							<th>Name</th>
 							<th>Email</th>
-							<th>Age</th>
 							<th>Mobile</th>
-							<th>Address</th>
-							<th>Birthay</th>
 							<th>Department</th>
 							<th>Designation</th>
-							<th>Join Date</th>
 							<th>Action</th>
 							<!-- <th></th> -->
 							
 						</tr>
 					</thead>
-					
+
 					</table>
 		        </div>
 	
@@ -53,10 +50,17 @@
 <script>
 $(function() {
     $('#emp-table').DataTable({
+
         processing: true,
         serverSide: true,
         ajax: '{!! route('emp.data') !!}',
         columns: [
+
+    {  data: "id",
+    render: function (data, type, row, meta) {
+        return meta.row + meta.settings._iDisplayStart + 1;
+    }
+},
             { data: 'photo', name: 'photo',
             	render: function (data, url) {
             		return "<img height=50 width=50 src='/uploads/photos/' />";
@@ -64,47 +68,35 @@ $(function() {
              },
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
-            { data: 'age', name: 'age' },
             { data: 'phone', name: 'phone'},
-            { data: 'address', name: 'address' },
-            { data: 'dateofbirth', name: 'dateofbirth' },
             { data: 'department_id', name: 'department_id' },
             { data: 'designation_id', name: 'designation_id' },
-            { data: 'joined', name: 'joined' },
             { data: 'action' ,name: 'action'}
             // { data: 'delete', name: 'edit'}         
         ]
     });
 });
+
 </script>
+<!-- <script>
+	$(document).ready(function() {
+    $('#emp.table').DataTable( {
+"columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+        } ],
+        "order": [[ 1, 'asc' ]]
+    } );
+ 
+    on( 'order.dt search.dt', function () {
+        column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+} );
+</script> -->
 @endpush
 
 <!-- 
-						 <tbody>
-						@foreach ($employees as $employee)
-						<tr>
-							<td>
-							<a href="profile.html" class="avatar"><img src="/uploads/photos/{{ $employee->photo }}" class="rounded circle"/></a>
-							<h4><a href="profile.html">{{$employee->name}}<span>{{$employee->designation_name}}</span></a></h4>
-							</td>
-							<td>{{$employee->email}}</td>
-							<td>{{$employee->age}}</td>
-							<td>{{$employee->phone}}</td>
-							<td>{{$employee->address}}</td>
-							<td>{{$employee->dateofbirth}}</td>
-							<td>{{$employee->department_name}}</td>
-							<td>{{$employee->designation_name}}</td>
-							<td>{{$employee->joined}}</td>
-
-							<td class="text-right">
-							<div class="dropdown">
-								<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-									<ul class="dropdown-menu pull-right">
-										<li><a href="#" data-toggle="modal" data-target="#edit_employee"><i class="fa fa-pencil m-r-5"></i> Edit</a></li>
-										<li><a href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a></li>
-									</ul>
-							</div>
-							</td>
-							</tr>
-							@endforeach
-						</tbody> -->
+						 

@@ -95,7 +95,9 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Department::find($id)->delete();
+        return redirect()->route('dep.index')
+                        ->with('success', "Department Deleted Successful");
     }
 
     private function validateInput($request) {
@@ -132,22 +134,18 @@ class DepartmentController extends Controller
 
             $model = Department::all();
             return Datatables::of($model)
-                ->addColumn("edit", function($model) {
-                    $data = "<a class='btn btn-success' href=" . route("dep.edit", $model->id) . ">Edit</a>";
-
-                    return $data;
-                })
-            ->addColumn("delete", function($model) {
-                    $data = '<form action="' . route('dep.destroy', $model->id). '" method="post">'
+                ->addColumn("action", function($model) {
+                    $data = '<div class="col-md-1"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>'.
+                            '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
-                                '<button class="btn btn-danger">Delete</button>
-                            </form>';
-                    return $data;
-                })
-            ->rawColumns(['edit', 'delete'])
-            ->toJson();
-        }
-        return abort('404');
+                                '<button class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                            </form></div>';
+                            return $data;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+    return abort(404);
 }
 }
