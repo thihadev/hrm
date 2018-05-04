@@ -11,6 +11,7 @@ use App\Department;
 use App\Designation;
 use App\Employee;
 use Image;
+use Session;
 
 class EmployeeController extends Controller
 {
@@ -124,7 +125,9 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employees = Employee::find($id);
-        return view('emp.edit', compact('employees'));
+        $departments = Department::select('name', 'id')->get(); 
+        $designations = Designation::select('name', 'id')->get(); 
+        return view('Employee.edit',['employees' => $employees,'departments' => $departments,'designations' => $designations]);
     }
 
     /**
@@ -136,6 +139,23 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
+        request()->validate([
+            'photo' => 'required',
+            'name' => 'required|min:3',
+            'email' => 'required|email',
+            'age' => 'required|integer',
+            'phone' => 'required',
+            'address' => 'required',
+            'dateofbirth' => 'required',
+            'department_id' => 'required',
+            'designation_id' => 'required',
+            'joined' => 'required'
+        ]);
+                var_dump($request->all);
+        Employee::find($id)->update($request->all());
+
+         Session::flash('message', 'You have successfully updated Product.'); 
+         return redirect()->route('emp.index');
         // $employee = Employee::findOrFail($id);
         // $this->validateInput($request);
         // // Upload image
@@ -213,12 +233,12 @@ class EmployeeController extends Controller
 
         if($request->ajax()) {
 
-            $model = Employee::latest();
+            $employees = Employee::latest();
 
-            return Datatables::of($model)
-                ->addColumn("action", function($model) {
-                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>'.
-                            '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+            return Datatables::of($employees)
+                ->addColumn("action", function($employees) {
+                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $employees->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>'.
+                            '<div class="col-md-1"><form action="' . route('emp.destroy', $employees->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
@@ -255,11 +275,11 @@ class EmployeeController extends Controller
 
 
 
-        //     ->addColumn("edit", function($model) {
+        //     ->addColumn("edit", function($employees) {
         //             $data = "<a class='btn btn-success' href=" . route("emp.edit", $model->id) . ">Edit</a>";
         //             return $data;
         //         })
-        //     ->addColumn("delete", function($model) {
+        //     ->addColumn("delete", function($employees) {
         //             $data = '<form action="' . route('emp.destroy', $model->id). '" method="post">'
         //                         . csrf_field() .
         //                          method_field("delete") .
