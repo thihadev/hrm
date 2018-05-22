@@ -25,9 +25,10 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
+        @if(Auth::user()->hasPermission("show-user"))
        <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> 
         <span>Dashboard</span></a></li>
-
+      @endif
         <li class="treeview">
           <a href="#">
             <i class="fa fa-group"></i>
@@ -98,6 +99,16 @@
         
         <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>       
       </ul>
+      @if(Auth::user()->hasPermission("show-user")) 
+      <ul class="sidebar-menu" data-widget="tree">
+          <li class="header">Setting</li>  
+          @if(Auth::user()->hasPermission("create-user"))
+        <li><a href="{{ route('register') }}"><i class="fa fa-user-plus"></i> 
+        <span>User Register</span></a></li>
+          @endif
+        <li><a href="#"><i class="fa fa-user-circle"></i> 
+        <span>User profile</span></a></li>
+      @endif
     </section>
     <!-- /.sidebar -->
   </aside>

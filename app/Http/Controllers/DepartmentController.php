@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Department;
@@ -16,8 +17,16 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::paginate(5);
-        return view('Department.index', ['departments' => $departments]);
+      if(Auth::user()->hasPermission("show-department")){        
+            $departments = Department::select('id')->get(); 
+            return view("Department.index", compact('departments'));
+        }else{
+            return redirect()->route('home');
+        }
+
+
+        // $departments = Department::paginate(5);
+        // return view('Department.index', ['departments' => $departments]);
     }
 
     /**
@@ -135,17 +144,35 @@ class DepartmentController extends Controller
             $model = Department::all();
             return Datatables::of($model)
                 ->addColumn("action", function($model) {
-                    $data = '<div class="col-md-1"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>'.
-                            '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    if(Auth::user()->hasPermission("update-department") || Auth::user()->hasPermission("delete-department"))
+            {
+            if(Auth::user()->hasPermission("update-department") && Auth::user()->hasPermission("delete-department"))
+              {
+                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
-                                '<button class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                                '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
                             </form></div>';
-                            return $data;
+                }
+            else if(Auth::user()->hasPermission("update-department")) {
+                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
+                }
+            else if(Auth::user()->hasPermission("delete-department")) {                     
+                    $data =  '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                                . csrf_field() .
+                                 method_field("delete") .
+                                '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
+                            </form></div>';
+                            
+                        }
+                
+                    return $data;
+                }
+                                               
             })
             ->rawColumns(['action'])
-            ->make(true);
+            ->toJson();
     }
     return abort(404);
-}
+    }
 }

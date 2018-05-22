@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -26,16 +27,23 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+
+        if(Auth::user()->hasPermission("show-info")){        
+            $employees = Employee::select('id')->get(); 
+            return view("Employee.index", compact('employees'));
+        }else{
+            return redirect()->route('home');
+        }
         // $employees = Employee::paginate(5);
         // return view("Employee.index", compact("employees"));
 
-        $employees = DB::table('employees') 
-        ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
-        ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
-        ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' )
-        ->paginate(5);
-        // $employees = Employee::paginate(5);
-        return view("Employee.index",['employees' => $employees]);
+        // $employees = DB::table('employees') 
+        // ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
+        // ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
+        // ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' )
+        // ->paginate(5);
+        // // $employees = Employee::paginate(5);
+        // return view("Employee.index",['employees' => $employees]);
     }
 
     /**
@@ -60,44 +68,62 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        // $employees = Employee::all();
-        // $this->validateInput($request);
-        // // Upload image
+        $employees = Employee::all();
+        $this->validateInput($request);
+        // Upload image
+        $photo= $request->file('photo');
+        $photoName = $photo->getClientOriginalName();
+        Image::make($photo)->resize(200, 200);
+        $path = $photo->store('');
+        // $path = Storage::putFileAs('image', $photo , $photoName);
+        $keys = ['name', 'email','age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
+        $input = $this->createQueryInput($keys, $request);
+        $input['photo'] = $path;
+        Employee::create($input);
+        return view('Employee.index', compact('employees'));
 
-        // $path = $request->file('avatar')->store('public');
-        // $keys = ['name', 'email','age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
-        // $input = $this->createQueryInput($keys, $request);
-        // $input['avatar'] = $path;
-        // Employee::create($input);
-        // return view('Employee.index', compact('employees', 'avatar'));
-
-            $request-> validate ([
-            'photo' => 'required',
-            'name' => 'required|min:3',
-            'email' => 'required|email',
-            'age' => 'required|integer',
-            'phone' => 'required',
-            'address' => 'required',
-            'dateofbirth' => 'required',
-            'department_id' => 'required',
-            'designation_id' => 'required',
-            'joined' => 'required'
-        ]);
+        //     $request-> validate ([
+        //     'photo' => 'required',
+        //     'name' => 'required|min:3',
+        //     'email' => 'required|email',
+        //     'age' => 'required|integer',
+        //     'phone' => 'required',
+        //     'address' => 'required',
+        //     'dateofbirth' => 'required',
+        //     'department_id' => 'required',
+        //     'designation_id' => 'required',
+        //     'joined' => 'required'
+        // ]);
 
 
-        $employees = DB::table('employees');
+        // $employees = DB::table('employees');
+        // $photo = $request->file('photo');
+        //     if(!empty($image)) {
+        //         $photoName = 'photo' . '.' .
+        //         $request->file('photo')->getClientOriginalName();
 
-        if($request->hasFile('photo')){
-            $photo = $request->file('photo');
-            $filename = $photo->getClientOriginalName();
-            Image::make($photo)->resize(300, 300)->save('uploads/photos/'. $filename );
+        //         $request->file('photo')->move(
+        //         public_path() . '/public/uploads/', $photoName );
 
-            $employees->photo = $photo;
-            // $employees->save();
-        }
-        Employee::create($request->all());
-        return view('Employee.index', compact('employees'))
-                    ->with('success', "Successful Registered");
+        //         $photo = Image::make(public_path() . '/public/uploads/', $photoName );
+        //         $photo->resize(200, 200);
+        //     $photo->save();
+        //     $employees = Employee::find($employees->id);
+        //     $employees->photo = $photoName;
+        //     $employees->save();
+        //     }
+
+        // if($request->hasFile('photo')){
+        //     $photo = $request->file('photo');
+        //     $filename = $photo->getClientOriginalName();
+        //     Image::make($photo)->resize(300, 300)->save('uploads/photos/'. $filename );
+
+        //     $employees->photo = $photo;
+        //     // $employees->save();
+        // }
+        // Employee::create($request->all());
+        // return view('Employee.index', compact('employees'))
+        //             ->with('success', "Successful Registered");
 
     }
 
@@ -196,28 +222,27 @@ class EmployeeController extends Controller
     }
 
 
-    // public function load($name) {
-    //      $path = storage_path().'/public/'.$name;
-    //     if (file_exists($path)) {
-    //         return Response::download($path);
-    //     }
-    // }
+    public function load($name) {
+         $path = storage_path().'/public/uploads'.$name;
+        if (file_exists($path)) {
+            return Response::download($path);
+        }
+    }
 
-    // private function validateInput(Request $request) {
-    //     $this->validate($request, [
-    //         'photo' => 'required',
-    //         'name' => 'required|min:3',
-    //         'email' => 'required|email',
-    //         'age' => 'required|integer',
-    //         'phone' => 'required',
-    //         'address' => 'required',
-    //         'dateofbirth' => 'required',
-    //         'department_id' => 'required',
-    //         'designation_id' => 'required',
-    //         'joined' => 'required'
-    //     ]);
-    //     // $path = $request->file('avatar')->put('avatars');
-    // }
+    private function validateInput(Request $request) {
+        $this->validate($request, [
+            'name' => 'required|min:3',
+            'email' => 'required|email',
+            'age' => 'required|integer',
+            'phone' => 'required',
+            'address' => 'required',
+            'dateofbirth' => 'required',
+            'department_id' => 'required',
+            'designation_id' => 'required',
+            'joined' => 'required'
+        ]);
+        // $path = $request->file('avatar')->put('avatars');
+    }
 
     private function createQueryInput($keys, $request) {
         $queryInput = [];
@@ -229,27 +254,45 @@ class EmployeeController extends Controller
         return $queryInput;
     }
 
-     public function data(Request $request) {
+    public function data(Request $request) {
 
         if($request->ajax()) {
 
-            $employees = Employee::latest();
+            $model = Employee::latest();
 
-            return Datatables::of($employees)
-                ->addColumn("action", function($employees) {
-                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $employees->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>'.
-                            '<div class="col-md-1"><form action="' . route('emp.destroy', $employees->id). '" method="post">'
+            return Datatables::of($model)
+                ->addColumn("action", function($model) {
+            if(Auth::user()->hasPermission("update-info") || Auth::user()->hasPermission("delete-info"))
+            {
+            if(Auth::user()->hasPermission("update-info") && Auth::user()->hasPermission("delete-info"))
+              {
+                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
-                                '<button class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                                '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
                             </form></div>';
-                            return $data;
+                }
+            else if(Auth::user()->hasPermission("update-info")) {
+                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
+                }
+            else if(Auth::user()->hasPermission("delete-info")) {                     
+                    $data =  '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                                . csrf_field() .
+                                 method_field("delete") .
+                                '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
+                            </form></div>';
+                            
+                        }
+                
+                    return $data;
+                }
+                                               
             })
             ->rawColumns(['action'])
-            ->make(true);
+            ->toJson();
     }
     return abort(404);
-}
+    }
 
 }
 

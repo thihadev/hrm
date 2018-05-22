@@ -6,9 +6,9 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
        <section class="content">
-       
+
       @yield('action-content')
-          
+
 </section>
     </section>
   </div>

@@ -15,7 +15,8 @@ class AdminUserSeeder extends Seeder
     {
         $admin = Role::find(1);
 
-        $user = User::find(2);
+        $user = User::find(1);
         
-        $user->roles()->attach($admin);    }
+        $user->roles()->attach($admin);    
+    }
 }

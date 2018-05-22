@@ -25,6 +25,41 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('delete-info', function($user, $role) {
+            if ($user->hasPermissions('delete-info')) {
+                if($user->id == $role->user_id || $user->is_admin ) {
+                    return true;
+                }
+
+            }
+        });
+
+        Gate::define('update-info', function($user, $role) {
+            if ($user->hasPermissions('show-info')) {
+                if($user->id == $role->user_id || $user->is_admin ) {
+                    return true;
+                }
+
+            }
+        });
+
+        Gate::define('create-info', function($user, $role) {
+            if ($user->hasPermissions('show-info')) {
+                if($user->id == $role->user_id || $user->is_admin ) {
+                    return true;
+                }
+
+            }
+        });
+
+        Gate::define('show-info', function($user, $role) {
+            if ($user->hasPermissions('show-info')) {
+                if($user->id == $role->user_id || $user->is_admin ) {
+                    return true;
+                }
+
+            }
+            return false;
+        });
     }
 }

@@ -2,12 +2,13 @@
 
 @section('action-content')
 <h1> Hello from Designation</h1><br>
+@if(Auth::user()->hasPermission("create-designation"))
 	<a href="{{route('des.create')}}">
 		<button class="btn-btn primary">
 			Create des
 	</button>
 </a>
-
+@endif
 <div class="box">
         <div class="box-header with-border">
           <h3 class="box-title">Department Information</h3>
@@ -24,8 +25,9 @@
 						<tr>	
               <th>No</th>								
 							<th>Name</th>
+              @if(Auth::user()->hasPermission("update-designation") OR Auth::user()->hasPermission("delete-designation"))
 							<th>Action</th>
-							<th></th>
+              @endif
 							<!-- <th></th> -->
 						</tr>
 					</thead>
@@ -55,7 +57,9 @@ $(function() {
     }
 },
             { data: 'name', name: 'name' },
+            @if(Auth::user()->hasPermission("update-designation") OR Auth::user()->hasPermission("delete-designation"))
             { data: 'action' ,name: 'action'}
+            @endif
         ]
     });
 });

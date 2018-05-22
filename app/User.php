@@ -29,12 +29,42 @@ class User extends Authenticatable
 
     public function roles() {
       // return $this->belongsToMany('App\Role')
-        return $this->belongsToMany('App\Role', 'role_users', 'role_id', 'user_id');
-                    // ->withTimestamps();
+        return $this->belongsToMany(Role::class ,'role_users');
     }
 
     public function Message() {
         return $this->hasMany(Message::class);
+    }
+
+    public function hasAccess(array $permissions) : bool
+    {
+        foreach ($this->roles as $role) {
+           if($role->hasAccess($permissions)) 
+           {
+            return true;
+           }
+        }
+        return false;
+    }
+
+    public function hasPermission($permission) {
+        if($this->roles() != null) 
+        {
+            $user_permissions = $this->roles()->first()->permissions;
+            if(array_key_exists($permission, $user_permissions))
+            {
+                if($user_permissions[$permission]) 
+                {
+                    return true;
+                } else {
+                    return false;
+                        } 
+                } else {
+                    return false;
+            }
+            
+        }
+        return false;
     }
 
 //     public function authorizeRoles($roles)
@@ -59,13 +89,13 @@ class User extends Authenticatable
 //   }
 //   return false;
 // }
-public function hasRole($role)
-{
-  if ($this->roles()->where('name', $role)->first()) {
-    return true;
-  }
-  return false;
-}
+// public function hasRole($role)
+// {
+//   if ($this->roles()->where('name', $role)->first()) {
+//     return true;
+//   }
+//   return false;
+// }
 
 
 }

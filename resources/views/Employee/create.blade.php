@@ -8,7 +8,6 @@
       <!-- <div class="panel-body"> -->
         <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{{ route('emp.store') }}">
           {{csrf_field()}}
-          <input name="_method" type="hidden" value="PATCH">
           <div class="profile-img-wrap">
            <img class="inline-block" src="../img/user.jpg" >
            <div class="fileupload btn btn-default">

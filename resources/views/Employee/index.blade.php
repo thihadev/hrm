@@ -2,11 +2,13 @@
 
 @section('action-content')
 <h1> Hello From Employee</h1><br>
+@if(Auth::user()->hasPermission("create-info"))
 	<a href="{{route('emp.create')}}">
 		<button class="btn-btn primary">
 			Create emp
 	</button>
-</a>	
+</a>
+@endif	
 	<div class="box">
         <div class="box-header with-border">
           <h3 class="box-title">Employee Information</h3>
@@ -28,7 +30,9 @@
 							<th>Mobile</th>
 							<th>Department</th>
 							<th>Designation</th>
+                            @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
 							<th>Action</th>
+                            @endif
 							<!-- <th></th> -->
 							
 						</tr>
@@ -62,8 +66,8 @@ $(function() {
     }
 },
             { data: 'photo', name: 'photo',
-            	render: function (data, url) {
-            		return "<img height=50 width=50 src='/uploads/photos/' />";
+            	render: function (data, url ,type) {
+            		return "<img height=50 width=50 src='/app/public/bke4HYIlBRgou1kSwI5xPrbTAh4otduvC88TAMNy.jpeg' />";
             	}
              },
             { data: 'name', name: 'name' },
@@ -71,7 +75,9 @@ $(function() {
             { data: 'phone', name: 'phone'},
             { data: 'department_id', name: 'department_id' },
             { data: 'designation_id', name: 'designation_id' },
+            @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
             { data: 'action' ,name: 'action'}
+            @endif
             // { data: 'delete', name: 'edit'}         
         ]
     });

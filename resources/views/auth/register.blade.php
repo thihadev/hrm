@@ -61,6 +61,25 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+                            <label for="role" class="col-md-4 control-label">Role</label>
+
+                            <div class="col-md-6">
+                                <select id="role" type="text" class="form-control" name="role" value="{{ old('role') }}" required autofocus>
+
+                                    @foreach($roles as $id=>$role)
+                                        <option value="{{$id}}"> {{$role}}</option>
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
