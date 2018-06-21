@@ -8,6 +8,7 @@
 			Create des
 	</button>
 </a>
+<div id="buttons" class="pull-right"></div>
 @endif
 <div class="box">
         <div class="box-header with-border">
@@ -20,7 +21,7 @@
           </div>
         </div>
         <div class="box-body">
-           <table class="table table-bordered" id="des-table">
+           <table class="table table-bordered" id="des-table" style="width: 100%;">
 					<thead>
 						<tr>	
               <th>No</th>								
@@ -46,7 +47,11 @@
 @push('scripts')
 <script>
 $(function() {
-    $('#des-table').DataTable({
+    var table = $('#des-table').DataTable({
+        // dom: 'Bfrtip',
+        // buttons: [
+        //     'copy', 'csv', 'excel', 'pdf', 'print'
+        // ],
         processing: true,
         serverSide: true,
         ajax: '{!! route('des.data') !!}',
@@ -62,6 +67,27 @@ $(function() {
             @endif
         ]
     });
+      var buttons = new $.fn.dataTable.Buttons(table, {
+      buttons: [{
+      extend: 'copy',
+      title: 'Designation Detail'
+        }, {
+      extend: 'csv',
+      filename: 'Designation Detail'
+        }, {
+      extend: 'pdf',
+      title: 'Designation Detail',
+      filename: 'Designation Detail'
+        }, {
+      extend: 'excel',
+      title: 'Designation Detail',
+      filename: 'Designation Detail'
+        }, {
+      extend: 'print',
+      title: 'Designation Detail',
+      filename: 'Designation Detail'
+        }]
+    }).container().appendTo($('#buttons'));
 });
 </script>
 @endpush

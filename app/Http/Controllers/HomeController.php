@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Client;
+use Auth;
+use Hash;
+use App\User;
 use App\Employee;
 use App\Designation;
 use App\Department;
@@ -60,9 +64,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-
+        $users = User::count();
         $employees = Employee::count();
-        return view('home', ['employees' => $employees]);
+        $clients = Client::count();
+        return view('home', ['employees' => $employees, 'users' => $users, 'clients' => $clients]);
             // compact('employees'));
     }
 
@@ -72,5 +77,10 @@ class HomeController extends Controller
         $employees = Employee::count();
         return view('home', ['employees' => $employees]);
             // compact('employees'));
+    }
+
+    public function calendar()
+    {
+        return view('widget.calendar');
     }
 }

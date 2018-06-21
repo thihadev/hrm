@@ -13,44 +13,8 @@ use App\Events\MessagePosted;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
-
-//Chat room route
-Route::get('/chat', function() {
-	return view('chat');
-})->middleware('auth');
-
-// Route::get('/chat', 'ChatController@getMessages')->middleware('auth');
-// Route::post('/chat', 'ChatController@postMessages')->middleware('auth');
-Route::get('/chat', 'ChatController@index')->middleware('auth');
-
-//chat username route
-// Route::get('/username', 'UsernameController@show')->middleware('auth');
-
-Route::get('/messages', function() {
-	return App\Message::with('user')->get();
-})->middleware('auth');
-
-Route::post('/messages', function() {
-	$user = Auth::user();
-	$user->messages()->create([
-		'message' => $request()->get('message')
-	]);
-	return ['status' => 'OK'];
-})->middleware('auth');
-
-
-// event(new MessagePosted($message, $user));
-
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-//users profile
-Route::get('profile', 'UserController@profile');
-Route::post('profile', 'UserController@update_avatar');
 
 //login & logout route
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -71,17 +35,37 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('/changePassword', 'HomeController@showChangePasswordForm');
 Route::post('/changePassword', 'HomeController@changePassword')->name('changePassword');
 
+// Route::group(['middleware' => 'auth'], function() {
+
+Route::get('/chat', 'ChatController@index');
+Route::get('/messages', 'ChatController@fetchMessages');
+Route::post('/messages', 'ChatController@sendMessage');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+
+//users profile
+Route::get('profile', 'ProfileController@index')->name('profile.index');
+Route::post('profile', 'UserController@update_avatar');
+
+//users setting
+Route::resource('user' , 'UserSettingController');
+Route::get("user-data", "UserSettingController@data")->name("user.data");
+
 
 //test
-Route::get('/admin', 'AdminController@index');
+Route::get('/admin', 'AdminController@admin');
 Route::get('/superadmin', 'SuperAdminController@index');
 
 //Employee Route
 Route::resource('emp', 'EmployeeController');
-// Route::get('emp', 'EmployeeController@index')->name('emp.index');
-// Route::get('emp/create', 'EmployeeController@create')->name('emp.create');
-// Route::post('emp/store', 'EmployeeController@store')->name('emp.store');
 Route::get("emp-data", "EmployeeController@data")->name("emp.data");
+// Route::get('emp/{id}', 'EmployeeController@show')->name("emp.show");
+
 // Route::get('avatars/{name}', 'EmployeeController@load');
 // Route::get('/Employee/create-step1', 'EmployeeController@createStep1');
 // Route::post('/Employee/create-step1', 'EmployeeController@postCreateStep1');
@@ -93,5 +77,49 @@ Route::get("dep-data", 'DepartmentController@data')->name('dep.data');
 Route::resource("des", 'DesignationController');
 Route::get("des-data", 'DesignationController@data')->name('des.data');
 
+Route::resource("expense" ,"ExpenseController");
+Route::get("expense-data", 'ExpenseController@data')->name('expense.data');
+
+Route::resource("client" ,"ClientController");
+Route::get("client-data", 'ClientController@data')->name('client.data');
+
+
+// Route::get("/payroll/{id}" ,"PayrollController@index")->name('payroll.index');
+Route::resource("payroll", "PayrollController");
+Route::get("payroll-data", 'PayrollController@data')->name('payroll.data');
+// Route::get("/payslip" ,"PayrollController@payslip")->name('/payslip');
+Route::get("payslip.print" ,"PayrollController@print")->name('payslip.print');
+
+
+Route::get('calendar', 'HomeController@calendar')->name('calendar');
+
+Route::get('error', function() {
+	return view('error');
+});
+// });
+
+//Chat room route
+// Route::get('/chat', function() {
+// 	return view('chat');
+// })->middleware('auth');
+
+// Route::get('messages', 'ChatController@getMessages')->middleware('auth');
+// Route::post('messages', 'ChatController@postMessages')->middleware('auth');
+// Route::get('/chat', 'ChatController@index')->middleware('auth');
+
+//chat username route
+// Route::get('/username', 'UsernameController@show')->middleware('auth');
+
+// Route::get('/messages', function() {
+// 	return App\Message::with('user')->get();
+// })->middleware('auth');
+
+// Route::post('/messages', function() {
+// 	$user = Auth::user();
+// 	$user->messages()->create([
+// 		'message' => $request()->get('message')
+// 	]);
+// 	return ['status' => 'OK'];
+// })->middleware('auth');
 
 

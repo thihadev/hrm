@@ -8,10 +8,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Datatables;
+use App\Payroll;
 use App\Department;
+use App\Role;
+use App\UserRole;
+use App\User;
 use App\Designation;
 use App\Employee;
-use Image;
+use Intervention\Image\Facades\Image;
 use Session;
 
 class EmployeeController extends Controller
@@ -34,16 +38,7 @@ class EmployeeController extends Controller
         }else{
             return redirect()->route('home');
         }
-        // $employees = Employee::paginate(5);
-        // return view("Employee.index", compact("employees"));
 
-        // $employees = DB::table('employees') 
-        // ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
-        // ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
-        // ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' )
-        // ->paginate(5);
-        // // $employees = Employee::paginate(5);
-        // return view("Employee.index",['employees' => $employees]);
     }
 
     /**
@@ -53,10 +48,11 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::all();        
         $departments = Department::all();
         $designations = Designation::all();
-        return view('Employee.create', ['departments' => $departments, 'designations' => $designations]);
+        $roles = \App\Role::orderBy('name')->pluck('name', 'id');
+        return view('Employee.create', ['roles' => $roles, 'departments' => $departments, 'designations' => $designations]);
 
     }
 
@@ -68,68 +64,57 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $employees = Employee::all();
-        $this->validateInput($request);
-        // Upload image
-        $photo= $request->file('photo');
-        $photoName = $photo->getClientOriginalName();
-        Image::make($photo)->resize(200, 200);
-        $path = $photo->store('');
-        // $path = Storage::putFileAs('image', $photo , $photoName);
-        $keys = ['name', 'email','age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
-        $input = $this->createQueryInput($keys, $request);
-        $input['photo'] = $path;
-        Employee::create($input);
+
+        $filename = public_path('photos/a.png');
+        if($request->file('photo')) {
+            $file = $request->file('photo');
+            Image::make($file)->resize(300, 300);
+            $filename = str_random(12);
+            $fileExt = $file->getClientOriginalExtension();
+            
+            $photopath = public_path('photos');
+            $filename = $filename . '.' . $fileExt;
+            
+            $file->move($photopath, $filename);
+
+            $user            = new User;
+            $user->name      = $request->name;
+            $user->email     = str_replace(' ', '_', $request->name) . '@gmail.com';
+            $user->password  = bcrypt('123456');          
+            $user->save();
+
+
+
+            $emp                = new Employee;
+            $emp->photo         = $filename;
+            $emp->name          = $request->name;
+            $emp->email         = $request->email;
+            $emp->gender        = $request->gender;
+            $emp->nrc           = $request->nrc;
+            $emp->phone         = $request->phone;
+            $emp->address       = $request->address;
+            $emp->dateofbirth   = $request->dateofbirth;
+            $emp->department_id = $request->department_id;
+            $emp->designation_id= $request->designation_id;
+            $emp->joined        = $request->joined;
+            $emp->salary        = $request->salary;
+            $emp->user_id       = $user->id;
+
+            $emp->save();
+
+
+            $userRole          = new UserRole();
+            $userRole->role_id = $request->role;
+            $userRole->user_id = $user->id;
+            $userRole->save();
+        alert()->success('Successfully', 'New Employee Registered');
+        // Session()->flash('message', 'Employee Registered successfully!');
+            
         return view('Employee.index', compact('employees'));
-
-        //     $request-> validate ([
-        //     'photo' => 'required',
-        //     'name' => 'required|min:3',
-        //     'email' => 'required|email',
-        //     'age' => 'required|integer',
-        //     'phone' => 'required',
-        //     'address' => 'required',
-        //     'dateofbirth' => 'required',
-        //     'department_id' => 'required',
-        //     'designation_id' => 'required',
-        //     'joined' => 'required'
-        // ]);
-
-
-        // $employees = DB::table('employees');
-        // $photo = $request->file('photo');
-        //     if(!empty($image)) {
-        //         $photoName = 'photo' . '.' .
-        //         $request->file('photo')->getClientOriginalName();
-
-        //         $request->file('photo')->move(
-        //         public_path() . '/public/uploads/', $photoName );
-
-        //         $photo = Image::make(public_path() . '/public/uploads/', $photoName );
-        //         $photo->resize(200, 200);
-        //     $photo->save();
-        //     $employees = Employee::find($employees->id);
-        //     $employees->photo = $photoName;
-        //     $employees->save();
-        //     }
-
-        // if($request->hasFile('photo')){
-        //     $photo = $request->file('photo');
-        //     $filename = $photo->getClientOriginalName();
-        //     Image::make($photo)->resize(300, 300)->save('uploads/photos/'. $filename );
-
-        //     $employees->photo = $photo;
-        //     // $employees->save();
-        // }
-        // Employee::create($request->all());
-        // return view('Employee.index', compact('employees'))
-        //             ->with('success', "Successful Registered");
+        }
 
     }
 
-        // $request->file('avatar');
-        // Storage::put('public/image', $request->file('avatar'));
-        // Employee::create($request->except('_token'));
 
     /**
      * Display the specified resource.
@@ -139,7 +124,11 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        //
+        $employees = Employee::find($id);
+
+
+        return view('Employee.show', compact("employees", "departments", "designations"));
+
     }
 
     /**
@@ -150,10 +139,12 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
+
         $employees = Employee::find($id);
         $departments = Department::select('name', 'id')->get(); 
-        $designations = Designation::select('name', 'id')->get(); 
-        return view('Employee.edit',['employees' => $employees,'departments' => $departments,'designations' => $designations]);
+        $designations = Designation::select('name', 'id')->get();
+
+        return view('Employee.edit',compact("employees", "departments","designations"));
     }
 
     /**
@@ -166,35 +157,22 @@ class EmployeeController extends Controller
     public function update(Request $request, $id)
     {
         request()->validate([
-            'photo' => 'required',
             'name' => 'required|min:3',
             'email' => 'required|email',
-            'age' => 'required|integer',
+            'gender' => 'required',
+            'nrc' => 'required',
             'phone' => 'required',
             'address' => 'required',
             'dateofbirth' => 'required',
             'department_id' => 'required',
             'designation_id' => 'required',
-            'joined' => 'required'
-        ]);
-                var_dump($request->all);
+            'joined' => 'required',
+            'salary' => 'required'
+            ]);
         Employee::find($id)->update($request->all());
-
-         Session::flash('message', 'You have successfully updated Product.'); 
+        alert()->success('Successfully', ' Updated Employee Info');
+         // Session::flash('message', 'You have successfully updated Product.'); 
          return redirect()->route('emp.index');
-        // $employee = Employee::findOrFail($id);
-        // $this->validateInput($request);
-        // // Upload image
-        // $keys = ['name', 'email', 'age', 'phone','address','dateofbirth', 'department_id', 'designation_id', 'joined'];
-        // $input = $this->createQueryInput($keys, $request);
-        // if ($request->file('avatar')) {
-        //     $path = $request->file('avatar')->store('public');
-        //     $input['avatar'] = $path;
-        // }
-
-        // Employee::where('id', $id)
-        //     ->update($input);
-
           
     }
 
@@ -207,18 +185,13 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
 
-        Employee::find($id)->delete();
-        return redirect()->route('emp.index')
-                        ->with('success', "Employee info Deleted Successful");
-        // $employees = Employee::findOrFail($id);
-        // Employee::destroy($id);
+        $employees = Employee::find($id);
+        $employees->user()->delete();
+        $employees->delete();
 
-        // return redirect()->route("emp.index", "Successful Deleted");
-        // $products = Product::findOrFail($id);
-        // if(\Auth::user()->can('delete-products', $products)) {
-        //     Product::destroy($id);
-        // }
-        // return redirect()->route("product.index");    
+        Session::flash('danger', 'Your Employee Info Deleted Successfully!');
+        return redirect()->route('emp.index');
+ 
     }
 
 
@@ -231,36 +204,43 @@ class EmployeeController extends Controller
 
     private function validateInput(Request $request) {
         $this->validate($request, [
+            'photo' => 'required',
             'name' => 'required|min:3',
-            'email' => 'required|email',
-            'age' => 'required|integer',
+            'email' => 'required|email|unique:email',
+            'gender' => 'required',
+            'nrc' => 'required',
             'phone' => 'required',
             'address' => 'required',
             'dateofbirth' => 'required',
             'department_id' => 'required',
             'designation_id' => 'required',
-            'joined' => 'required'
+            'joined' => 'required',
+            'salary' => 'required'
         ]);
-        // $path = $request->file('avatar')->put('avatars');
+
     }
 
-    private function createQueryInput($keys, $request) {
-        $queryInput = [];
-        for($i = 0; $i < sizeof($keys); $i++) {
-            $key = $keys[$i];
-            $queryInput[$key] = $request[$key];
-        }
-
-        return $queryInput;
-    }
 
     public function data(Request $request) {
 
         if($request->ajax()) {
 
             $model = Employee::latest();
+           
+            $model = DB::table('employees') 
+        ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
+        ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
+        ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' );
 
             return Datatables::of($model)
+                ->addColumn("photo", function($model) {
+                    $url = asset("/photos/$model->photo");
+                    return view("_datatable.image", compact('url'))->render();
+                })
+                ->addColumn("name", function($employees) {
+                return '<a href="'.route('emp.show', $employees->id).'">' . $employees->name.'</a>';
+
+            })
                 ->addColumn("action", function($model) {
             if(Auth::user()->hasPermission("update-info") || Auth::user()->hasPermission("delete-info"))
             {
@@ -273,7 +253,7 @@ class EmployeeController extends Controller
                             </form></div>';
                 }
             else if(Auth::user()->hasPermission("update-info")) {
-                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
+                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
                 }
             else if(Auth::user()->hasPermission("delete-info")) {                     
                     $data =  '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
@@ -288,7 +268,7 @@ class EmployeeController extends Controller
                 }
                                                
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['name','photo','action'])
             ->toJson();
     }
     return abort(404);
@@ -296,46 +276,3 @@ class EmployeeController extends Controller
 
 }
 
-    //     public function upload(Request $request){
-
-    //     // Handle the user upload of avatar
-    //         $employees = Employee::all();
-    //     if($request->hasFile('myphoto')){
-    //         $avatar = $request->file('myphoto');
-    //         $filename = time() . '.' . $avatar->getClientOriginalExtension();
-    //         Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/photos/' . $filename ) );
-
-    //         $employees = Auth::user();
-    //         $employees->avatar = $filename;
-    //         $employees->save();
-    //     }
-
-    //     return view('Employee.index', compact('employees'));
-
-    // }
-
-
-
-
-
-        //     ->addColumn("edit", function($employees) {
-        //             $data = "<a class='btn btn-success' href=" . route("emp.edit", $model->id) . ">Edit</a>";
-        //             return $data;
-        //         })
-        //     ->addColumn("delete", function($employees) {
-        //             $data = '<form action="' . route('emp.destroy', $model->id). '" method="post">'
-        //                         . csrf_field() .
-        //                          method_field("delete") .
-        //                         '<button class="btn btn-danger">Delete</button>
-        //                     </form>';
-        //             return $data;
-        //         })
-        //     ->rawColumns(['edit', 'delete'])
-        //     ->toJson();
-        // }
-        // 
-            
-// <ul class="dropdown-menu pull-right">
-//                                         <li><a href="#" data-toggle="modal" data-target="#edit_employee"><i class="fa fa-pencil m-r-5"></i> Edit</a></li>
-//                                         <li><a href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a></li>
-//                                     </ul>

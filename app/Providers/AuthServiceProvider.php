@@ -61,5 +61,14 @@ class AuthServiceProvider extends ServiceProvider
             }
             return false;
         });
+
+        // Gate::define('show-dept', function($user, $dept) {
+        //     if($user->hasPermissions('show-dept')) {
+        //         if($user->id == $dept->dept_id ) {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // });
     }
 }

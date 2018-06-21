@@ -30,7 +30,7 @@ class RegisterController extends Controller
      * @var string
      */
 
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -54,7 +54,8 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required'
+            'role' => 'required',
+            'department' => 'required'
         ]);
     }
 
@@ -72,7 +73,9 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
+        
         $user->roles()->attach($data['role']);
+        $user->departments()->attach($data['department']);
 
         return $user;
     }
@@ -80,6 +83,10 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $roles = \App\Role::orderBy('name')->pluck('name', 'id');
-        return view('auth.register', compact("roles"));
+        $departments = \App\Department::orderBy('name')->pluck('name', 'id');
+        return view('auth.register', ["roles" => $roles , "departments" => $departments]);
+
+        
+
     }
 }

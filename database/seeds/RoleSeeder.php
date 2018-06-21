@@ -35,6 +35,7 @@ class RoleSeeder extends Seeder
             'delete-user' => true,
             'update-user' => true,
             'create-user' => true,
+
           ]
         ]);
 
@@ -55,6 +56,8 @@ class RoleSeeder extends Seeder
             'create-designation' => true,
 
             'show-user' => true,
+
+            'show-dept' => true,
          ]
         ]);
 
@@ -69,6 +72,8 @@ class RoleSeeder extends Seeder
             'show-designation' => true,
 
             'show-user' => false,
+
+            'show-dept' => false,
 
          ]
         ]);

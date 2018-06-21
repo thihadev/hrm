@@ -4,23 +4,18 @@
 <h1> Hello From Employee</h1><br>
 @if(Auth::user()->hasPermission("create-info"))
 	<a href="{{route('emp.create')}}">
-		<button class="btn-btn primary">
+		<button class="btn btn-info">
 			Create emp
 	</button>
 </a>
-@endif	
-	<div class="box">
+<div id="buttons" class="pull-right"></div>
+@endif
+	<div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Employee Information</h3>
-  			<div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
-          </div>
         </div>
         <div class="box-body">
-           <table class="table table-bordered" id="emp-table">
+           <table class="table table-striped" id="emp-table" style="width: 100%;">
 					<thead>
 						<tr>	
 							<th>No</th>		
@@ -30,22 +25,17 @@
 							<th>Mobile</th>
 							<th>Department</th>
 							<th>Designation</th>
-                            @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
+                @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
 							<th>Action</th>
-                            @endif
+                @endif
 							<!-- <th></th> -->
 							
 						</tr>
 					</thead>
 
 					</table>
-		        </div>
+		    </div>
 	
-
-        <!-- /.box-body -->
-        <div class="box-footer">
-          Footer
-        </div>
     </div>
         <!-- /.box-footer-->
       <!-- /.box -->
@@ -53,7 +43,11 @@
 @push('scripts')
 <script>
 $(function() {
-    $('#emp-table').DataTable({
+    var table = $('#emp-table').DataTable({
+        // dom: 'Bfrtip',
+        // buttons: [
+        //     'copy', 'csv', 'excel', 'pdf', 'print'
+        // ],
 
         processing: true,
         serverSide: true,
@@ -65,44 +59,44 @@ $(function() {
         return meta.row + meta.settings._iDisplayStart + 1;
     }
 },
-            { data: 'photo', name: 'photo',
-            	render: function (data, url ,type) {
-            		return "<img height=50 width=50 src='/app/public/bke4HYIlBRgou1kSwI5xPrbTAh4otduvC88TAMNy.jpeg' />";
-            	}
-             },
+            { data: 'photo', name: 'photo'},
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
             { data: 'phone', name: 'phone'},
-            { data: 'department_id', name: 'department_id' },
-            { data: 'designation_id', name: 'designation_id' },
+            { data: 'department_name', name: 'department_id' },
+            { data: 'designation_name', name: 'designation_id' },
             @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
             { data: 'action' ,name: 'action'}
             @endif
             // { data: 'delete', name: 'edit'}         
         ]
     });
+      var buttons = new $.fn.dataTable.Buttons(table, {
+      buttons: [{
+      extend: 'copy',
+      title: 'Employees Detail'
+        }, {
+      extend: 'csv',
+      filename: 'Employees Detail'
+        }, {
+      extend: 'pdf',
+      title: 'Employees Detail',
+      filename: 'Employees Detail'
+        }, {
+      extend: 'excel',
+      title: 'Employees Detail',
+      filename: 'Employees Detail'
+        }, {
+      extend: 'print',
+      title: 'Employees Detail',
+      filename: 'Employees Detail'
+        }]
+    }).container().appendTo($('#buttons'));
 });
 
 </script>
-<!-- <script>
-	$(document).ready(function() {
-    $('#emp.table').DataTable( {
-"columnDefs": [ {
-            "searchable": false,
-            "orderable": false,
-            "targets": 0
-        } ],
-        "order": [[ 1, 'asc' ]]
-    } );
- 
-    on( 'order.dt search.dt', function () {
-        column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-            cell.innerHTML = i+1;
-        } );
-    } ).draw();
-} );
-</script> -->
+
 @endpush
 
-<!-- 
+
 						 

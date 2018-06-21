@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Cache;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'access'
     ];
 
     /**
@@ -29,10 +30,26 @@ class User extends Authenticatable
 
     public function roles() {
       // return $this->belongsToMany('App\Role')
-        return $this->belongsToMany(Role::class ,'role_users');
+        return $this->belongsToMany(Role::class ,'user_roles');
     }
 
-    public function Message() {
+    public function role () {
+
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    public function departments() 
+    {
+        return $this->belongsToMany(Department::class , 'dept_users');
+    }
+
+    public function messages()
+    {
         return $this->hasMany(Message::class);
     }
 
@@ -65,6 +82,11 @@ class User extends Authenticatable
             
         }
         return false;
+    }
+
+    public function isOnline()
+    {
+        return Cache::has('user-is-online-'. $this->id);
     }
 
 //     public function authorizeRoles($roles)

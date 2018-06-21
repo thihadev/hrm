@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use Session;
 use App\Department;
 use App\Employee;
 
@@ -51,7 +52,8 @@ class DepartmentController extends Controller
          Department::create([
             'name' => $request['name']
         ]);
-
+         alert()->success('Successfully', 'New Department Added', 'success');
+         // session()->flash('message', "Successful add Department!");
         return view('Department.index');
     }
 
@@ -93,8 +95,9 @@ class DepartmentController extends Controller
 
         ]);
         Department::find($id)->update($request->all());
-        return redirect()->route('dep.index')
-                        ->with('success','Department updated successfully');    }
+        alert()->success('Successfully', 'Updated Department', 'success');
+        return redirect()->route('dep.index');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -105,60 +108,38 @@ class DepartmentController extends Controller
     public function destroy($id)
     {
         Department::find($id)->delete();
-        return redirect()->route('dep.index')
-                        ->with('success', "Department Deleted Successful");
+        alert()->success('Successfully', 'Deleted Department', 'success');
+        return redirect()->route('dep.index');
+
     }
 
     private function validateInput($request) {
         $this->validate($request, [
         'name' => 'required|max:60|unique:departments'
-    ]);
+        ]);
     }
-
-//     public function data(Request $request) {
-//         if($request->ajax()) {
-
-//             $model = Department::all();
-//             return Datatables::of($model)
-//                 ->addColumn("edit", function($model) {
-//                     $data = "<a class='btn btn-success' href=" . route("dep.edit", $model->id) . ">Edit</a>";
-//                     return $data;
-//                 })
-//             ->addColumn("delete", function($model) {
-//                     $data = '<form action="' . route('dep.destroy', $model->id). '" method="post">'
-//                                 . csrf_field() .
-//                                  method_field("delete") .
-//                                 '<button class="btn btn-danger">Delete</button>
-//                             </form>';
-//                     return $data;
-//                 })
-//             ->rawColumns(['edit', 'delete'])
-//             ->toJson();
-//         }
-//         return abort('404');
-// }
 
     public function data(Request $request) {
         if($request->ajax()) {
 
-            $model = Department::all();
+            $model = Department::select('id' , 'name')->get();
             return Datatables::of($model)
                 ->addColumn("action", function($model) {
                     if(Auth::user()->hasPermission("update-department") || Auth::user()->hasPermission("delete-department"))
             {
             if(Auth::user()->hasPermission("update-department") && Auth::user()->hasPermission("delete-department"))
               {
-                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    $data = '<div class="col-md-2"><a href="'.route("dep.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('dep.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
                             </form></div>';
                 }
             else if(Auth::user()->hasPermission("update-department")) {
-                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
+                    $data = '<div class="col-md-1"><a href="'.route("dep.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
                 }
             else if(Auth::user()->hasPermission("delete-department")) {                     
-                    $data =  '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    $data =  '<div class="col-md-1"><form action="' . route('dep.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>

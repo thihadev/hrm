@@ -19,16 +19,18 @@ class CreateEmployeesTable extends Migration
             $table->string('photo')->default('default.jpg');
             $table->string('name');
             $table->string('email');
-            // $table->string('password');
-            $table->integer('age');
+            $table->string('gender');
+            $table->string('nrc');
             $table->string('phone');
             $table->text('address');
             $table->date('dateofbirth');
             $table->integer('department_id')->unsigned();
             $table->integer('designation_id')->unsigned();
-            // $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
-            // $table->foreign('designation_id')->references('id')->on('designations')->onDelete('cascade')->onUpdate('cascade');
             $table->date('joined');
+            $table->integer('salary');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->timestamps();
         });
         

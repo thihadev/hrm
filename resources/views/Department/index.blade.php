@@ -8,33 +8,34 @@
 			Create dep
 	</button>
 </a>
+<div id="buttons" class="pull-right"></div>
 @endif
 <div class="box">
         <div class="box-header with-border">
           <h3 class="box-title">Department Information</h3>
   			<div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+          
+         <!--    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
             <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
+              <i class="fa fa-times"></i></button> -->
           </div>
         </div>
         <div class="box-body">
-           <table class="table table-bordered" id="dep-table">
+           <table class="table table-striped table-bordered" id="dep-table" style="width: 100%;">
 					<thead>
 						<tr>
-              <th>No</th>						
-							<th>Name</th>
+              <th>No</th>	            				
+							<th>Name</th>        
+               @if(Auth::user()->hasPermission("update-department") OR Auth::user()->hasPermission("delete-department"))
 							<th>Action</th>
-							<th></th>
-							<!-- <th></th> -->
+              @endif
+
 						</tr>
 					</thead>
-					
 					</table>
-		        </div>
+		    </div>
 	
-
         <!-- /.box-body -->
         <div class="box-footer">
           Footer
@@ -45,9 +46,14 @@
 @push('scripts')
 <script>
 $(function() {
-    $('#dep-table').DataTable({
+    var table = $('#dep-table').DataTable({
+        // dom: 'Bfrtip',
+        // buttons: [
+        //     'copy', 'csv', 'excel', 'pdf', 'print'
+        // ],
         processing: true,
         serverSide: true,
+        // dom: 'Bfrtip',
         ajax: '{!! route('dep.data') !!}',
         columns: [
             {  data: "id",
@@ -56,11 +62,33 @@ $(function() {
     }
 },
             { data: 'name', name: 'name' },
+           
             @if(Auth::user()->hasPermission("update-department") OR Auth::user()->hasPermission("delete-department"))
             { data: 'action' ,name: 'action'}
             @endif
         ]
     });
+  var buttons = new $.fn.dataTable.Buttons(table, {
+      buttons: [{
+      extend: 'copy',
+      title: 'Department Detail'
+        }, {
+      extend: 'csv',
+      filename: 'Department Detail'
+        }, {
+      extend: 'pdf',
+      title: 'Department Detail',
+      filename: 'Department Detail'
+        }, {
+      extend: 'excel',
+      title: 'Department Detail',
+      filename: 'Department Detail'
+        }, {
+      extend: 'print',
+      title: 'Department Detail',
+      filename: 'Department Detail'
+        }]
+    }).container().appendTo($('#buttons'));
 });
 </script>
 @endpush

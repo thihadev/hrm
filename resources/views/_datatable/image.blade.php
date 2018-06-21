@@ -1,0 +1,1 @@
+<img src="{{ $url }}" width="50" height="50" class="img-rounded" />

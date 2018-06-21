@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Employee;
 use App\Designation;
-use Auth;
+
 
 class DesignationController extends Controller
 {
@@ -19,15 +19,13 @@ class DesignationController extends Controller
     public function index()
     {
 
-        if(Auth::user()->hasPermission("show-designation")){        
+        if(Auth::user()->hasPermission("show-designation"))
+        {        
             $designations = Designation::select('id')->get(); 
             return view("Designation.index", compact('designations'));
         }else{
             return redirect()->route('home');
         }
-
-        // $designations = Designation::paginate(5);
-        // return view('Designation.index', ['designations' => $designations]);
     }
 
     /**
@@ -37,8 +35,7 @@ class DesignationController extends Controller
      */
     public function create()
     {
-        $employees = Employee::all();
-        return view('Designation.create',  array('user' => Auth::user()));
+        return view('Designation.create');
     }
 
     /**
@@ -53,7 +50,7 @@ class DesignationController extends Controller
          Designation::create([
             'name' => $request['name']
         ]);
-
+        alert()->success('Successfully', 'New Designation Added', 'success');
         return view('Designation.index');
     }
 
@@ -76,7 +73,8 @@ class DesignationController extends Controller
      */
     public function edit($id)
     {
-        //
+        $designations = Designation::find($id);
+        return view('Designation.edit', compact("designations"));
     }
 
     /**
@@ -88,7 +86,15 @@ class DesignationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+            request()->validate([
+            'name' => 'required',
+        ]);
+            
+        Designation::find($id)->update($request->all());
+
+        alert()->success('Successfully', 'Designation Info Updated', 'success');
+        return redirect()->route('des.index');
+
     }
 
     /**
@@ -99,15 +105,16 @@ class DesignationController extends Controller
      */
     public function destroy($id)
     {
-             Designation::find($id)->delete();
+        Designation::find($id)->delete();
+        alert()->success('Successfully', 'Designation Deleted', 'success');
         return redirect()->route('des.index')
-                        ->with('success', "Designation Deleted Successful");
+
     }
 
     private function validateInput($request) {
         $this->validate($request, [
         'name' => 'required|max:60|unique:departments'
-    ]);
+        ]);
     }
 
     public function data(Request $request) {
@@ -120,17 +127,17 @@ class DesignationController extends Controller
             {
             if(Auth::user()->hasPermission("update-designation") && Auth::user()->hasPermission("delete-designation"))
               {
-                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    $data = '<div class="col-md-2"><a href="'.route("des.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('des.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
                             </form></div>';
                 }
             else if(Auth::user()->hasPermission("update-designation")) {
-                    $data = '<div class="col-md-3"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
+                    $data = '<div class="col-md-1"><a href="'.route("des.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
                 }
             else if(Auth::user()->hasPermission("delete-designation")) {                     
-                    $data =  '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    $data =  '<div class="col-md-1"><form action="' . route('des.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>

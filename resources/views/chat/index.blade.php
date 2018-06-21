@@ -1,23 +1,21 @@
-@extends('layouts.chatroom')
+@extends('layouts.app')
 
 @section('content')
 <h1>Welcome to Chatroom</h1>
-	<div id="app">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				Chatroom
-				<span class="badge pull-right">@{{ roomCount.length }}</span>
-			</div>
+        <div class="col-md-10">
+            <div class="panel panel-default">
+                <div class="panel-heading">Chats</div>
 
-			<chat-log :messages="messages"></chat-log>
-			<chat-composer v-on:messagesent="addMessage"></chat-composer>
+                <div class="panel-body">
+                    <chat-messages :messages="messages"></chat-messages>
+                </div>
+                <div class="panel-footer">
+                    <chat-form
+                        v-on:messagesent="addMessage"
+                        :user="{{ Auth::user() }}"
+                    ></chat-form>
+                </div>
+            </div>
+        </div>
 
-		
-			</div>
-		</div>
-			
 @endsection
-
-<!-- 				<chat-list v-bind:messages="messages"></chat-list>
-				<chat-create v-on:messagecreated="addMessage"
-					:currentuser="currentuser"></chat-create> -->

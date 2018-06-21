@@ -44,17 +44,32 @@
           </div>
         </div>
 
-
-
-        <div class="form-group{{ $errors->has('age') ? ' has-error' : '' }}">
-          <label for="age" class="col-md-4 control-label">Age</label>
+        <div class="form-group {{ $errors->has('gender') ? ' has-error' : '' }}">
+          <label for="gender" class="col-md-4 control-label">Gender</label>
 
           <div class="col-md-6">
-            <input id="age" type="text" class="form-control" name="age" value="{{ old('age') }}" required>
-
-            @if ($errors->has('age'))
+            <select class="form-control" id="gender" name="gender">
+                <option value="">-- Select Gender --</option>
+                <option value="male" >Male</option>
+                <option value="female" >Female</option> 
+            </select>
+                  @if ($errors->has('gender'))
             <span class="help-block">
-              <strong>{{ $errors->first('age') }}</strong>
+              <strong>{{ $errors->first('gender') }}</strong>
+            </span>
+            @endif
+          </div>
+        </div>
+
+        <div class="form-group{{ $errors->has('nrc') ? ' has-error' : '' }}">
+          <label for="nrc" class="col-md-4 control-label">Your NRC</label>
+
+          <div class="col-md-6">
+            <input id="nrc" type="nrc" class="form-control" name="nrc" value="{{ old('nrc') }}" required>
+
+            @if ($errors->has('nrc'))
+            <span class="help-block">
+              <strong>{{ $errors->first('nrc') }}</strong>
             </span>
             @endif
           </div>
@@ -143,6 +158,38 @@
             </div>
           </div>
         </div>
+
+        <div class="form-group{{ $errors->has('salary') ? ' has-error' : '' }}">
+          <label for="salary" class="col-md-4 control-label">Your Salary</label>
+
+          <div class="col-md-6">
+            <input id="salary" type="salary" class="form-control" name="salary" value="{{ old('salary') }}" required>
+
+            @if ($errors->has('salary'))
+            <span class="help-block">
+              <strong>{{ $errors->first('salary') }}</strong>
+            </span>
+            @endif
+          </div>
+        </div>
+
+        <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+            <label for="role" class="col-md-4 control-label">Role Permission</label>
+                <div class="col-md-6">
+                      <select id="role" type="text" class="form-control" name="role" value="{{ old('role') }}" required autofocus>
+
+                            @foreach($roles as $id=>$role)
+                              <option value="{{$id}}"> {{$role}}</option>
+                            @endforeach
+                      </select>
+
+                                @if ($errors->has('name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
 
         <div class="col-md-6 col-md-offset-4">
