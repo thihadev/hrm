@@ -4,20 +4,18 @@
 <h1> Hello from Designation</h1><br>
 @if(Auth::user()->hasPermission("create-designation"))
 	<a href="{{route('des.create')}}">
-		<button class="btn-btn primary">
-			Create des
+		<button class="btn btn-primary">
+			Create Designation
 	</button>
 </a>
 <div id="buttons" class="pull-right"></div>
 @endif
-<div class="box">
+<div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Department Information</h3>
   			<div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
           </div>
         </div>
         <div class="box-body">
@@ -27,7 +25,7 @@
               <th>No</th>								
 							<th>Name</th>
               @if(Auth::user()->hasPermission("update-designation") OR Auth::user()->hasPermission("delete-designation"))
-							<th>Action</th>
+							<th></th>
               @endif
 							<!-- <th></th> -->
 						</tr>

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
+
+   
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -19,6 +22,9 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+
+    protected $maxLoginAttempts = 3; // Amount of bad attempts user can make
+    protected $lockoutTime = 10; // Time for which user is going to be blocked in seconds
 
     /**
      * Where to redirect users after login.
@@ -35,5 +41,12 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function hasTooManyLoginAttempts(Request $request)
+    {
+        return $this->limiter()->tooManyAttempts(
+            $this->throttleKey($request), 3, 1
+        );
     }
 }

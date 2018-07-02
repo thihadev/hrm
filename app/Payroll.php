@@ -11,7 +11,7 @@ class Payroll extends Model
 
     public function employee () 
     {
-    	return $this->belongsToMany("App\Employee");
+    	return $this->hasOne("App\Employee", 'id','employee_id');
     }
 
 
@@ -24,6 +24,6 @@ class Payroll extends Model
 			$calc = $this->hours * $this->rate;
 			return $this->gross = $calc + $this->employee->salary;
 		}
-		return $this->gross = 0;
+		return $this->gross = 0; 
 	}
 }

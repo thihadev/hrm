@@ -4,14 +4,13 @@
 <h1> Hello From Payroll</h1><br>
 @if(Auth::user()->hasPermission("create-info"))
 	<a href="{{route('payroll.create')}}">
-		<button class="btn-btn primary">
+		<button class="btn btn-primary">
 			Create Payroll
 	</button>
 </a>
 <div id="buttons" class="pull-right"></div>
-<a target="_blank" href="" class="btn btn-default">payslip</a> 
 @endif	
-	<div class="box">
+	<div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Payroll Information</h3>
   			<div class="box-tools pull-right">
@@ -32,9 +31,8 @@
 							<th>Rate</th>
 							<th>Salary</th>
               <th>Pay Date </th>
-              <th>Payslip</th>
                 @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
-							<th>Action</th>
+							<th></th>
                 @endif
 							
 						</tr>
@@ -56,6 +54,8 @@
 <script>
 $(function() {
     var table = $('#payroll-table').DataTable({
+        dateFormat: 'dd-mm-yyyy',
+        timeFormat: 'HH:mm:ss',
         processing: true,
         serverSide: true,
         ajax: '{!! route('payroll.data') !!}',
@@ -72,7 +72,6 @@ $(function() {
             { data: 'rate', name: 'rate'},
             { data: 'gross', name: 'gross' },
             { data: 'created_at', name: 'created_at' },
-            { data: 'payslip', name: 'payslip' },
             @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
             { data: 'action' ,name: 'action'}
             @endif

@@ -22,7 +22,7 @@
                     <i class="fa fa-snowflake-o"></i> <span>HRM</span>
                 </div>
                     
-                @yield('content')
+                    @yield('content')
 
             </div>
                       

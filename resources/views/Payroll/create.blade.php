@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Add new designation</div>
+                <div class="panel-heading">Add new Payroll</div>
                 <div class="panel-body">
 
 			<p><b>Full-Time</b> : Yes</p>
@@ -45,14 +45,14 @@
 			<div class="form-group">
 				<label class="control-label col-md-4" for="hours">Hours: </label>
 				<div class="col-md-5">					
-					<input type="number" name="hours" class="form-control">		
+					<input type="number" value="0" name="hours" id="hours" class="form-control">		
 				</div>
 			</div>
 			
 			<div class="form-group">
 				<label class="control-label col-md-4" for="rate">Rate: </label>
 				<div class="col-md-5">
-					<input type="number" name="rate" class="form-control">	
+					<input type="number" value="0" name="rate" id="rate" class="form-control">	
 				</div>
 			</div>			
 			

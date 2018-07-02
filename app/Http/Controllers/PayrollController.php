@@ -26,10 +26,14 @@ class PayrollController extends Controller
      */
     public function index()
     {
+        if(Auth::user()->hasPermission("show-user")) {
         $employees = Employee::all();
         $payrolls = Payroll::all();
 
         return view("Payroll.index", ['payrolls' => $payrolls, 'employees' => $employees]);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -39,9 +43,13 @@ class PayrollController extends Controller
      */
     public function create()
     {
+        if(Auth::user()->hasPermission("create-info")) {
         $employees = Employee::all();
         $payrolls = Payroll::all();        
         return view('Payroll.create', ['payrolls' => $payrolls,'employees' => $employees]);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -52,7 +60,7 @@ class PayrollController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $request->validate([
             'over_time' => 'required|bool',
             'hours'=> 'required',
             'rate'=>'required'
@@ -71,7 +79,7 @@ class PayrollController extends Controller
         $payrolls->save();
 
         alert()->success('Successfully', 'New Employee Payroll Added', 'success');
-        return redirect()->route('payroll.index');
+        return view('Payroll.index', compact("payrolls"));
     }
 
     /**
@@ -82,14 +90,17 @@ class PayrollController extends Controller
      */
     public function show($id)
     {
-        $payrolls = Payroll::where('id',$id)->first();
-        $employees = Employee::where('id', $id)->first();
-
-        $departments = Department::where('id', $id)->first();
-        $designations = Designation::where('id', $id)->first();
-        // dd($payrolls);
+        if(Auth::user()->hasPermission("show-user")) {
+        $payrolls = Payroll::findOrFail($id)->with('employee')->where('id',$id)->first();
+        $employees = Employee::get();
+        $departments = Department::get();
+        $designations = Designation::get();
+        // dd($employees);
         
         return view("Payroll.payslip", compact("payrolls" ,"employees", "departments", "designations"));
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -100,9 +111,13 @@ class PayrollController extends Controller
      */
     public function edit($id)
     {
-        $payrolls = Payroll::find($id);
+        if(Auth::user()->hasPermission("update-user")) {
+        $payrolls = Payroll::findOrFail($id);
         $employees = Employee::select('name', 'id')->get();
         return view('Payroll.edit',['payrolls' => $payrolls, 'employees' => $employees]);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -135,30 +150,26 @@ class PayrollController extends Controller
      */
     public function destroy($id)
     {
+        if(Auth::user()->hasPermission("delete-user")) {
         $payrolls = Payroll::findOrFail($id);
         $payrolls->delete();
         
         alert()->success('Successfully', 'Employee Payroll Deleted', 'success');
         return redirect()->back();
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     public function data(Request $request) {
 
         if($request->ajax()) {
-
-            $model = Payroll::latest();
-            //dd($model);
+            // $model = Payroll::latest();
             $model = DB::table('payrolls') 
         ->leftJoin('employees', 'payrolls.employee_id', '=', 'employees.id')
-        ->select('payrolls.*', 'employees.name as employee_name', 'employees.id as employee_id');
+        ->select('payrolls.*', 'employees.name as employee_name', 'employees.id as employee_id')->get();
            
             return Datatables::of($model)
-                ->addColumn("payslip", function($payroll) {
-                    $data = '<div class="col-md-3"><a href="'.route("payroll.show", $payroll->id).'"><button class="btn btn-info"> Generate Payslip</button></a></div>';
-                    
-
-                    return $data;
-                })
                 ->addColumn("action", function($model) {
             if(Auth::user()->hasPermission("update-info") || Auth::user()->hasPermission("delete-info"))
             {
@@ -186,11 +197,10 @@ class PayrollController extends Controller
                 }
                                                
             })
-            ->rawColumns(['payslip','action'])
+            ->rawColumns(['action'])
             ->toJson();
     }
     return abort(404);
     }
-
 
 }

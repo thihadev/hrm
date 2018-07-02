@@ -4,12 +4,13 @@
             <div class="chat-body clearfix">
                 <div class="header">
                     <strong class="primary-font">
-                        {{ message.user.name }}
+                        {{ message.user.name }}                 
                     </strong>
                 </div>
                 <p>
-                    {{ message.message }}
+                    {{ message.message }} 
                 </p>
+
             </div>
         </li>
     </ul>
@@ -18,5 +19,11 @@
 <script>
   export default {
     props: ['messages']
+            
   };
 </script>
+<style lang="css">
+    .primary-font {
+        color : darkblue;
+    }
+</style>

@@ -7,6 +7,8 @@
                 Send
             </button>
         </span>
+
+
     </div>
 </template>
 
@@ -29,6 +31,7 @@
 
                 this.newMessage = ''
             }
+
         }    
     }
 </script>

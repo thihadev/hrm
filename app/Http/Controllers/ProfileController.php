@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Setting;
 use Image;
+use App\Post;
 use App\Role;
 use App\Employee;
 use App\User;
@@ -22,12 +24,17 @@ class ProfileController extends Controller
      */
     public function index()
     {
-    // $employees = Employee::all();
+    $settings = Setting::all();
+
+    if(Auth::user()->hasPermission("show-info")) {
     $employees = Employee::where('user_id', \Auth::user()->id)
         ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
         ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
         ->select('employees.*', 'departments.name as department_name', 'departments.id as department_id', 'designations.name as designation_name', 'designations.id as designation_id' )->get();
-        return view('profile', compact('employees'),['user' => Auth::user()]);
+        return view('profile', compact('employees', "settings"),['user' => Auth::user()]);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -108,7 +115,7 @@ class ProfileController extends Controller
     //         $user->avatar = $filename;
     //         $user->save();
     //     }
-
+    //     alert()->success("Successful", " You update Your Profile Photo ");
     //     // return view('profile', array('user' => Auth::user()) );
     //     return view('profile',compact('employees'),['user' => Auth::user()]);
 

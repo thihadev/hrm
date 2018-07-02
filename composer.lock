@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4af3970633ea5a4e6dbd5c9d51fdfdde",
+    "content-hash": "f13b6bad9fe5be141728084eeca97a13",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1146,6 +1146,53 @@
             "time": "2018-05-09T14:34:18+00:00"
         },
         {
+            "name": "maddhatter/laravel-fullcalendar",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maddhatter/laravel-fullcalendar.git",
+                "reference": "6502ee3eee2d506d58fa37864af8f2003c9aaca1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maddhatter/laravel-fullcalendar/zipball/6502ee3eee2d506d58fa37864af8f2003c9aaca1",
+                "reference": "6502ee3eee2d506d58fa37864af8f2003c9aaca1",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MaddHatter\\LaravelFullcalendar\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "Calendar": "MaddHatter\\LaravelFullcalendar\\Facades\\Calendar"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "MaddHatter\\LaravelFullcalendar": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shawn Tunney",
+                    "email": "shawn.tunney@gmail.com"
+                }
+            ],
+            "description": "Laravel helper for FullCalendar.io",
+            "time": "2017-09-18T17:54:18+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.23.0",
             "source": {
@@ -1365,6 +1412,54 @@
                 "php"
             ],
             "time": "2018-06-03T11:33:10+00:00"
+        },
+        {
+            "name": "nitmedia/wkhtml2pdf",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NitMedia/wkhtml2pdf.git",
+                "reference": "586df81dcbeb75b092dc35f9e8b3ef940d66e05a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NitMedia/wkhtml2pdf/zipball/586df81dcbeb75b092dc35f9e8b3ef940d66e05a",
+                "reference": "586df81dcbeb75b092dc35f9e8b3ef940d66e05a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Nitmedia\\Wkhtml2pdf": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nithin Meppurathu",
+                    "email": "admin@nitmedia.com"
+                }
+            ],
+            "description": "Html 2 Pdf - using wkhtml2pdf, work on 32bit and 64 bit linux + MacOS",
+            "keywords": [
+                "illuminate",
+                "laravel",
+                "pdf",
+                "wkhtml2pdf",
+                "wkhtmltopdf"
+            ],
+            "time": "2017-03-06T14:34:44+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -5085,6 +5180,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "nitmedia/wkhtml2pdf": 20,
         "socieboy/alerts": 20
     },
     "prefer-stable": false,

@@ -1,11 +1,44 @@
 @extends('dashboard')
 
 @section('action-content')
-<div class="container">
-    <div class="row">
-        <!-- <div class="box box-success"> -->
-        <div class="col-md-12">             
-            <img type="file" name="avatar"  src="/uploads/avatars/{{ $user->avatar }}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px; margin-top: 20px;">
+@if(Auth::user()->is_admin)
+<div class="col-md-10">
+
+        <div class="panel panel-primary">
+ 
+          <div class="panel-heading"> HRM Company Infomation </div><br/>
+  
+      <div class="panel-body">    
+          <table class="table table-bordered" style="width: 100%; text-align: center;">
+          <thead >
+            <tr>  
+              <th class="text-center">Company Name</th>   
+              <th class="text-center">Company Address</th>
+              <th class="text-center">Contact</th>
+              <th class="text-center">About</th>         
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($settings as $set)
+              <tr>
+                <td>{{ $set->name }}</td>
+                <td>{{ $set->address }}</td>
+                <td>{{ $set->contact }}</td>
+                <td>{{ $set->about }}</td>
+                
+              </tr>
+              @endforeach
+          </tbody>
+          </table>
+        </div>
+
+    </div>
+            
+</div>
+@else
+    <div class="row">@foreach ($employees as $employee)
+        <div class="col-md-12">           
+            <img type="file" name="photo"  src="/photos/{{ $employee->photo }}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px; margin-top: 20px;" />
             <div class="col-md-3 pull-right" style="margin-top: 20px; margin-right: 20px;">
                 <div class="small-box bg-black">
                     <div class="inner datebar" align="center">
@@ -15,34 +48,19 @@
                     </div>
                 </div>
             </div>
-            
-            <form enctype="multipart/form-data" action="/profile" method="POST">
-                <h3>Update Profile Image</h3><br>
-                <input type="file" name="avatar">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}"><br>
-                <input type="submit" class="btn btn-sm btn-primary">
-            </form>@foreach ($employees as $employee)
+        </div>
+    
                 <div class="panel-heading">
-                    <span class="panel-title"><h3>{{ $employee->name }}</h3></span>
+                    <span class="panel-title"><h3> Name : {{ $employee->name }}</h3></span>
                 </div>
-                
-                    <div style="margin-left: 30px; margin-bottom: 40px;">
-                       
-                        <p><span><h4>{{ $employee->department_name}}</h4></span></p>
-                        <p><span></span></p>
-                    
-                    </div>                           
-            </div>
-              <div class="form-group">
-                        <div class="col-md-2 pull-right">
-                            <button type="submit" class="btn btn-primary">
-                                Edit Profile
-                            </button>
-                        </div>
-                    </div> 
-        </div> 
+ 
+                    <div style="margin-left: 20px; margin-bottom: 30px;">
+                        <p><h4>Department : {{ $employee->department_name}}</h4></p>
+                        <p><h4>Address : {{ $employee->address}}</h4></p>
+                    </div>
+     
 
-        <div class="col-md-6">
+            <div class="col-md-6">
                 <div class="box box-success">
                     <div class="panel">
                         <div class="panel-heading">
@@ -64,13 +82,7 @@
                                         <td style="width: 10px" class="text-center"><i class="fa fa-genderless"></i>
                                         </td>
                                         <td><strong>Gender</strong></td>
-                                        <td>{{ $employee->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 10px" class="text-center"><i class="fa fa-envelope-o"></i>
-                                        </td>
-                                        <td><strong>Father's Name</strong></td>
-                                        <td></td>
+                                        <td>{{ $employee->gender }}</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 10px" class="text-center"><i class="fa fa-mobile-phone"></i>
@@ -78,18 +90,7 @@
                                         <td><strong>Phone</strong></td>
                                         <td>{{ $employee->phone }}</td>
                                     </tr>
-                                    <tr>
-                                        <td style="width: 10px" class="text-center"><i class="fa fa-map-marker"></i>
-                                        </td>
-                                        <td><strong>Qualification</strong></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 10px" class="text-center"><i class="fa fa-map-marker"></i>
-                                        </td>
-                                        <td><strong>Current Address</strong></td>
-                                        <td>{{$employee->address}}</td>
-                                    </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -111,7 +112,7 @@
                                     <tr>
                                         <td style="width: 10px" class="text-center"><i class="fa fa-key"></i></td>
                                         <td><strong>Employee ID</strong></td>
-                                        <td></td>
+                                        <td>{{ $employee->id }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-center"><i class="fa fa-briefcase"></i></td>
@@ -131,7 +132,7 @@
                                     <tr>
                                         <td class="text-center"><i class="fa fa-credit-card"></i></td>
                                         <td><strong>Salary</strong></td>
-                                        <td></td>
+                                        <td>{{ $employee->salary }}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -141,12 +142,15 @@
                     </div>
                 </div>
             </div>
-            @endforeach 
-    </div>         
+        </div>
+    @endforeach 
+    @endif
 
+    
 
 
 @endsection
+@push('scripts')
 <script type="text/javascript">
     function startTime() {
         var today = new Date(),
@@ -166,3 +170,4 @@
     }
     setInterval(startTime, 500);
 </script>
+@endpush

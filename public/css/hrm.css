@@ -1,0 +1,157 @@
+.fc button {
+    color: #00B5B8;
+    background-color: transparent;
+    border-color: #00B5B8;
+    height: 0;
+}
+.btn, .fc button {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .75rem 1rem !important;
+    font-size: 1rem;
+    border-radius: .25rem;
+    -webkit-transition: background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    -o-transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    -moz-transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+}
+.btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):active, .fc .show>button.dropdown-toggle, .fc button:not(:disabled):not(.disabled).active, .fc button:not(:disabled):not(.disabled):active, .show>.btn-outline-primary.dropdown-toggle {
+    color: #FFF;
+    background-color: #00B5B8;
+    border-color: #00B5B8;
+}
+.btn-outline-primary, .fc button {
+    color: #00B5B8;
+    background-color: transparent;
+    border-color: #00B5B8;
+}
+.btn.focus, .btn:focus, .fc button.focus, .fc button:focus {
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.fc-event {
+    background: #00B5B8;
+    border: 1px solid #009C9F;
+}
+/*--------pannel-heading----------*/
+.panel-primary {
+    border-color: #00B5B8;
+}
+.panel-primary>.panel-heading {
+    color: #fff;
+    background-color: #00B5B8;
+    border-color: #00B5B8;
+}
+.panel-body .btn-primary{
+	color: #fff;
+    background-color: #00B5B8 !important;
+    border-color: #00B5B8;
+}
+/*--------------Employee Form------------------*/
+/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
+
+.form-control{
+    background: transparent;
+}
+form {
+	width: 320px;
+	margin: 20px;
+}
+form > div {
+	position: relative;
+	overflow: hidden;
+}
+form input, form textarea {
+	width: 100%;
+	border: 2px solid gray;
+	background: none;
+	position: relative;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	padding: 8px 12px;
+	outline: 0;
+}
+form input:valid, form textarea:valid {
+	background: white;
+}
+form input:focus, form textarea:focus {
+	border-color: #357EBD;
+}
+form input:focus + label, form textarea:focus + label {
+	background: #357EBD;
+	color: white;
+	font-size: 90%;
+	padding: 1px 6px;
+	z-index: 2;
+	text-transform: uppercase;
+}
+form label {
+	-webkit-transition: background 0.2s, color 0.2s, top 0.2s, bottom 0.2s, right 0.2s, left 0.2s;
+	transition: background 0.2s, color 0.2s, top 0.2s, bottom 0.2s, right 0.2s, left 0.2s;
+	position: absolute;
+	color: #999;
+	padding: 7px 6px;
+	font-weight: normal;
+}
+form textarea {
+	display: block;
+	resize: vertical;
+}
+form.go-bottom input, form.go-bottom textarea {
+	padding: 12px 12px 12px 12px;
+}
+form.go-bottom label {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+form.go-bottom input:focus, form.go-bottom textarea:focus {
+	padding: 4px 6px 20px 6px;
+}
+form.go-bottom input:focus + label, form.go-bottom textarea:focus + label {
+	top: 100%;
+	margin-top: -16px;
+}
+form.go-right label {
+	border-radius: 0 5px 5px 0;
+	height: 100%;
+	top: 0;
+	right: 100%;
+	width: 100%;
+	margin-right: -100%;
+}
+form.go-right input:focus + label, form.go-right textarea:focus + label {
+	right: 0;
+	margin-right: 0;
+	width: 40%;
+	padding-top: 5px;
+}
+.emp-title{
+	padding-top:30px;
+	padding-bottom: 30px;
+	color: #ffffff;
+
+}
+.profile-img-wrap{
+	margin:0px !important;
+}
+.emp-img-block{
+	background: #357EBD;
+	border-bottom: 3px solid #fff;
+}
+.emp-img-block .emp-left{
+	padding-left:0px;
+	padding-bottom: 0px;
+}*/

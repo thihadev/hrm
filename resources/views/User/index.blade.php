@@ -27,7 +27,7 @@
               <th>Status</th>
 
                @if(Auth::user()->hasPermission("update-user") OR Auth::user()->hasPermission("delete-user"))
-							<th>Action</th>
+							<th></th>
               @endif
 
 						</tr>

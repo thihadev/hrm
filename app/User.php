@@ -28,6 +28,21 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function friendOfMine()
+    {
+        return $this->belongsToMany('App\User','friends' ,'user_id', 'friend_id');
+    }
+
+    public function friendOf()
+    {
+        return $this->belongsToMany('App\User','friends' ,'friend_id', 'user_id');
+    }
+
+    public function friends()
+    {
+        return $this->friendOfMine->merge($this->friendOf);
+    }
+
     public function roles() {
       // return $this->belongsToMany('App\Role')
         return $this->belongsToMany(Role::class ,'user_roles');

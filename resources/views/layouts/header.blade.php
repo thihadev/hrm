@@ -1,10 +1,10 @@
 <header class="main-header">
     <!-- Logo -->
-
 <div class="logo">
-  <span class="logo-mini"><b class="fa fa-group"></b></span>
-      <span class="fa fa-group" style="margin-top: 15px;"> HRM </span></div>
 
+      <span class="logo-mini" ><i class="fa fa-group" style="margin-top: 15px;"></i></span>
+      <span class="logo-lg" ><i class="fa fa-group" style="margin-top: 15px;"> HRM </i></span>
+    </div>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">

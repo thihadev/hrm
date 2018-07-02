@@ -35,7 +35,12 @@ class DesignationController extends Controller
      */
     public function create()
     {
+        if(Auth::user()->hasPermission("create-designation"))
+        {        
         return view('Designation.create');
+          }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -51,7 +56,7 @@ class DesignationController extends Controller
             'name' => $request['name']
         ]);
         alert()->success('Successfully', 'New Designation Added', 'success');
-        return view('Designation.index');
+        return view("Designation.index");
     }
 
     /**
@@ -62,7 +67,7 @@ class DesignationController extends Controller
      */
     public function show($id)
     {
-        //
+        return view("errors.404");
     }
 
     /**
@@ -73,8 +78,13 @@ class DesignationController extends Controller
      */
     public function edit($id)
     {
-        $designations = Designation::find($id);
-        return view('Designation.edit', compact("designations"));
+        if(Auth::user()->hasPermission("update-designation"))
+        {        
+            $designations = Designation::findOrFail($id);
+            return view('Designation.edit', compact("designations"));
+          }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -105,9 +115,14 @@ class DesignationController extends Controller
      */
     public function destroy($id)
     {
-        Designation::find($id)->delete();
-        alert()->success('Successfully', 'Designation Deleted', 'success');
-        return redirect()->route('des.index')
+        if(Auth::user()->hasPermission("delete-designation"))
+        {        
+            Designation::find($id)->delete();
+            alert()->success('Successfully', 'Designation Deleted', 'success');
+            return redirect()->route('des.index');
+        }else{
+            return redirect()->route('home');
+        }
 
     }
 

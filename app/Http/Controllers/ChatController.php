@@ -4,45 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Message;
+use Yajra\Datatables\Datatables;
 use App\Events\MessageSent;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class ChatController extends Controller
 {
     public function index() 
     {
-    	return view('chat.index');
+        
+      $users = User::all();
+    	return view('chat.index', compact("users"));
     }
-
-    // public function getMessages(Request $request)
-    // {
-    // 	if (!$request->ajax()) {
-    // 		throw new UnauthorizedException();
-    // 	}
-    // 	$messages = Message::with('user')->MostRecent()->get();
-    // 	$messages = array_reverse($messages->toArray());
-
-    // 	return $messages;
-    // }
-
-    //     public function postMessages(Request $request)
-    // {
-    // 	if (!$request->ajax()) {
-    // 		throw new UnauthorizedException();
-    // 	}
-    // 	$user = Auth::user();
-    // 	$message = $user->messages()->create([
-    // 		'message' => request()->get('message')
-    // 	]);
-
-    //     broadcast(new MessagePosted($user, $message))->toOthers();
-    	
-    //     return ['status' => 'OK'];
-    // }
 
     public function fetchMessages()
     {
-      return Message::with('user')->get();
+      $messages = Message::with('user')->MostRecent()->get();
+      $messages = array_reverse($messages->toArray());
+
+
+      return $messages;
     }
 
 /**
@@ -63,4 +45,6 @@ class ChatController extends Controller
 
       return ['status' => 'Message Sent!'];
     }
+
+
 }

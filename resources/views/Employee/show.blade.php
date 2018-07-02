@@ -5,7 +5,7 @@
     <div class="row">
         <!-- <div class="box box-success"> -->
 		<div class="col-md-12"> 
-		           
+	
             <img type="file" name="photo"  src="/photos/{{ $employees->photo }}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px; margin-top: 20px;">
             <div class="col-md-3 pull-right" style="margin-top: 20px; margin-right: 20px;">
                 <div class="small-box bg-black">
@@ -16,8 +16,13 @@
                     </div>
                 </div>
             </div>
-            
-        </div> 
+                           
+        </div>
+        <div style="margin-left: 20px; margin-bottom: 30px;">
+            <p><h3> Name : {{ $employees->name }}</h3></p>
+            <p><h4>Address : {{ $employees->address}}</h4></p>
+        </div>
+    </div>
 		
         <div class="col-md-6">
                 <div class="box box-success">
@@ -55,18 +60,7 @@
                                         <td><strong>Phone</strong></td>
                                         <td>{{$employees->phone}}</td>
                                     </tr>
-                                    <tr>
-                                        <td style="width: 10px" class="text-center"><i class="fa fa-map-marker"></i>
-                                        </td>
-                                        <td><strong>Qualification</strong></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 10px" class="text-center"><i class="fa fa-map-marker"></i>
-                                        </td>
-                                        <td><strong>Current Address</strong></td>
-                                        <td>{{$employees->address}}</td>
-                                    </tr>
+         
                                     </tbody>
                                 </table>
                             </div>
@@ -101,13 +95,21 @@
                                     <tr>
                                         <td class="text-center"><i class="fa fa-briefcase"></i></td>
                                         <td><strong>Department</strong></td>
-                                        <td> </td>
+                                       @foreach ($departments as $dep)
+                                       @if($dep->id == $employees->department_id)
+                                        <td >{{ $dep->name }} </td>
+                                        @endif
+                                        @endforeach
                                     </tr>
                                 
                                     <tr>
                                         <td class="text-center"><i class="fa fa-cubes"></i></td>
                                         <td><strong>Designation</strong></td> 
-                                        <td></td>
+                                        @foreach ($designations as $des)
+                                       @if($des->id == $employees->designation_id)
+                                        <td >{{ $des->name }} </td>
+                                        @endif
+                                        @endforeach
                                        
                                     </tr>
                                     <tr>

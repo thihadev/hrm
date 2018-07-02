@@ -8,9 +8,8 @@
         <div class="panel-heading">
             <span class="panel-title hidden-xs"> Edit Expense</span>
         </div>
-
-      
-           @if (count($errors) > 0)
+     
+              @if (count($errors) > 0)
                         <div class="alert alert-danger">
                             <strong>Whoops!!</strong> There were some problems with your input.<br>
                             <ul>
@@ -28,7 +27,7 @@
           <div class="col-md-6">
             <select class="form-control" id="user_id" value="{{$expenses->user_id}}" name="user_id">
               @foreach ($employees as $emp)
-              <option value="{{$emp->id}}">{{$emp->name}}</option>
+              <option {{$expenses->employee_id == $emp->id ? 'selected' : ''}} value="{{$emp->id}}">{{$emp->name}}</option>
               @endforeach
             </select>
           </div>

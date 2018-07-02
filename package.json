@@ -21,7 +21,8 @@
     "dependencies": {
         "datatables.net-buttons": "^1.5.1",
         "laravel-echo": "^1.4.0",
-        "moment": "^2.22.1",
-        "pusher-js": "^4.2.2"
+        "moment": "^2.22.2",
+        "pusher-js": "^4.2.2",
+        "select2-bootstrap-theme": "0.1.0-beta.10"
     }
 }

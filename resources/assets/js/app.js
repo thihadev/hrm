@@ -15,33 +15,30 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
-// Vue.component('chat-message', require('./components/ChatMessage.vue'));
-// Vue.component('chat-log',require('./components/ChatLog.vue'));
-// Vue.component('chat-composer',require('./components/ChatComposer.vue'));
+// Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('chat-messages', require('./components/ChatMessages.vue'));
 Vue.component('chat-form', require('./components/ChatForm.vue'));
-// Vue.component('chat-list',require('./components/ChatList.vue'));
-// Vue.component('chat-create',require('./components/ChatCreate.vue'));
+
 
 
 const app = new Vue({
     el: '#app',
 
     data: {
-        messages: []
+        messages: [],
+        onlineUsers: ''
     },
 
     created() {
         this.fetchMessages();
 
-            Echo.presence('chatroom')
-            .listen('MessagePosted', (e) => {
-            this.messages.push({
-            message: e.message.message,
-            user: e.user
-        });
-      });
+            Echo.private('chat')
+                .listen('MessageSent', (e) => {
+                    this.messages.push({
+                    message: e.message.message,
+                    user: e.user
+            });
+        });  
     },
 
 
@@ -58,7 +55,7 @@ const app = new Vue({
             axios.post('/messages', message).then(response => {
               console.log(response.data);
             });
-        }
+        },
 
     }
 });

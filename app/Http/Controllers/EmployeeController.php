@@ -33,7 +33,7 @@ class EmployeeController extends Controller
     {
 
         if(Auth::user()->hasPermission("show-info")){        
-            $employees = Employee::select('id')->get(); 
+            $employees = Employee::all(); 
             return view("Employee.index", compact('employees'));
         }else{
             return redirect()->route('home');
@@ -48,11 +48,15 @@ class EmployeeController extends Controller
      */
     public function create()
     {
+        if(Auth::user()->hasPermission("create-info")){   
         $employees = Employee::all();        
         $departments = Department::all();
         $designations = Designation::all();
         $roles = \App\Role::orderBy('name')->pluck('name', 'id');
         return view('Employee.create', ['roles' => $roles, 'departments' => $departments, 'designations' => $designations]);
+        }else{
+            return redirect()->route('home');
+        }
 
     }
 
@@ -64,6 +68,22 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        
+        $request-> validate ([
+            'photo' => 'required',
+            'name' => 'required|min:3',
+            'email' => 'required|email|unique:employees',
+            'gender' => 'required',
+            'nrc' => 'required|unique:employees',
+            'phone' => 'required|min:6|max:11',
+            'address' => 'required',
+            'dateofbirth' => 'required',
+            'department_id' => 'required',
+            'designation_id' => 'required',
+            'joined' => 'required',
+            'salary' => 'required'
+        ]);
+
 
         $filename = public_path('photos/a.png');
         if($request->file('photo')) {
@@ -83,8 +103,6 @@ class EmployeeController extends Controller
             $user->password  = bcrypt('123456');          
             $user->save();
 
-
-
             $emp                = new Employee;
             $emp->photo         = $filename;
             $emp->name          = $request->name;
@@ -101,7 +119,6 @@ class EmployeeController extends Controller
             $emp->user_id       = $user->id;
 
             $emp->save();
-
 
             $userRole          = new UserRole();
             $userRole->role_id = $request->role;
@@ -124,10 +141,16 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        $employees = Employee::find($id);
+        if(Auth::user()->hasPermission("show-info")) { 
+        $employees = Employee::findOrFail($id)  
+                    ->with('department', 'designation')->where('id',$id)->first();
+        $departments = Department::get();
+        $designations = Designation::get();
 
-
-        return view('Employee.show', compact("employees", "departments", "designations"));
+        return view('Employee.show', compact('employees','departments', 'designations'));
+        }else{
+            return abort(404);
+        }
 
     }
 
@@ -139,12 +162,15 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
-
-        $employees = Employee::find($id);
+        if(Auth::user()->hasPermission("update-info")){   
+        $employees = Employee::findOrFail($id);
         $departments = Department::select('name', 'id')->get(); 
         $designations = Designation::select('name', 'id')->get();
 
         return view('Employee.edit',compact("employees", "departments","designations"));
+        }else{
+            return abort(401);
+        }
     }
 
     /**
@@ -184,42 +210,26 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-
-        $employees = Employee::find($id);
+    if(Auth::user()->hasPermission("delete-info")){   
+        $employees = Employee::findOrFail($id);
         $employees->user()->delete();
         $employees->delete();
 
         Session::flash('danger', 'Your Employee Info Deleted Successfully!');
         return redirect()->route('emp.index');
+        }else{
+            return redirect()->route('home');
+        }
  
     }
 
 
-    public function load($name) {
-         $path = storage_path().'/public/uploads'.$name;
-        if (file_exists($path)) {
-            return Response::download($path);
-        }
-    }
-
-    private function validateInput(Request $request) {
-        $this->validate($request, [
-            'photo' => 'required',
-            'name' => 'required|min:3',
-            'email' => 'required|email|unique:email',
-            'gender' => 'required',
-            'nrc' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'dateofbirth' => 'required',
-            'department_id' => 'required',
-            'designation_id' => 'required',
-            'joined' => 'required',
-            'salary' => 'required'
-        ]);
-
-    }
-
+    // public function load($name) {
+    //      $path = storage_path().'/public/uploads'.$name;
+    //     if (file_exists($path)) {
+    //         return Response::download($path);
+    //     }
+    // }
 
     public function data(Request $request) {
 
@@ -237,23 +247,20 @@ class EmployeeController extends Controller
                     $url = asset("/photos/$model->photo");
                     return view("_datatable.image", compact('url'))->render();
                 })
-                ->addColumn("name", function($employees) {
-                return '<a href="'.route('emp.show', $employees->id).'">' . $employees->name.'</a>';
 
-            })
                 ->addColumn("action", function($model) {
             if(Auth::user()->hasPermission("update-info") || Auth::user()->hasPermission("delete-info"))
             {
             if(Auth::user()->hasPermission("update-info") && Auth::user()->hasPermission("delete-info"))
               {
-                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
+                    $data = '<div class="col-md-4"><a href="'.route('emp.show', $model->id).'"><button class="btn btn-info"><i class="fa fa-envelope"></i></button></a></div><div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div><div class="col-md-4"><form action="' . route('emp.destroy', $model->id). '" method="post">'
                                 . csrf_field() .
                                  method_field("delete") .
                                 '<button class="btn btn-danger" ><i class="fa fa-trash-o"></i></button>
                             </form></div>';
                 }
             else if(Auth::user()->hasPermission("update-info")) {
-                    $data = '<div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
+                    $data = '<div class="col-md-4"><a href="'.route('emp.show', $model->id).'"><button class="btn btn-info"><i class="fa fa-envelope"></i></button></a></div><div class="col-md-4"><a href="'.route("emp.edit", $model->id).'"><button class="btn btn-success"><i class="fa fa-pencil"></i></button></a></div>';
                 }
             else if(Auth::user()->hasPermission("delete-info")) {                     
                     $data =  '<div class="col-md-1"><form action="' . route('emp.destroy', $model->id). '" method="post">'
@@ -268,7 +275,7 @@ class EmployeeController extends Controller
                 }
                                                
             })
-            ->rawColumns(['name','photo','action'])
+            ->rawColumns(['photo','action'])
             ->toJson();
     }
     return abort(404);

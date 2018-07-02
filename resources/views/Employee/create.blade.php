@@ -49,7 +49,7 @@
 
           <div class="col-md-6">
             <select class="form-control" id="gender" name="gender">
-                <option value="">-- Select Gender --</option>
+                <option >-- Select Gender --</option>
                 <option value="male" >Male</option>
                 <option value="female" >Female</option> 
             </select>
@@ -79,7 +79,7 @@
           <label for="phone" class="col-md-4 control-label">Your Phone </label>
 
           <div class="col-md-6">
-            <input id="phone" type="text" class="form-control" name="phone" value="{{ old('phone') }}" required>
+            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone') }}" required>
 
             @if ($errors->has('phone'))
             <span class="help-block">

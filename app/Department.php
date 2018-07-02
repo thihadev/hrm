@@ -12,7 +12,7 @@ class Department extends Model
 
     protected $fillable = ["name"];
 
-    public function Employee() 
+    public function employee() 
     {
     	return $this->hasMany("App\Employee", "name", "id");
     }

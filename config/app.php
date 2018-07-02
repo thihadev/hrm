@@ -172,6 +172,8 @@ return [
         Socieboy\Alerts\AlertServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Nitmedia\Wkhtml2pdf\L5Wkhtml2pdfServiceProvider::class,
+        MaddHatter\LaravelFullcalendar\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -232,6 +234,8 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'PDF'    => Nitmedia\Wkhtml2pdf\Facades\Wkhtml2pdf::class,
+        'Calendar' => MaddHatter\LaravelFullcalendar\Facades\Calendar::class,
 
     ],
 

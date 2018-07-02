@@ -4,7 +4,7 @@
 <h1> Hello from Client</h1><br>
 @if(Auth::user()->hasPermission("create-info"))
 	<a href="{{route('client.create')}}">
-		<button class="btn-btn primary">
+		<button class="btn btn-primary">
 			Create Client
 	</button>
 </a>
@@ -27,7 +27,7 @@
               <th>Address</th>
               <th>Website</th>     
                @if(Auth::user()->hasPermission("update-info") OR Auth::user()->hasPermission("delete-info"))
-							<th>Action</th>
+							<th></th>
               @endif
 
 						</tr>

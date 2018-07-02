@@ -35,7 +35,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('update-info', function($user, $role) {
-            if ($user->hasPermissions('show-info')) {
+            if ($user->hasPermissions('update-info')) {
                 if($user->id == $role->user_id || $user->is_admin ) {
                     return true;
                 }
@@ -44,7 +44,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('create-info', function($user, $role) {
-            if ($user->hasPermissions('show-info')) {
+            if ($user->hasPermissions('create-info')) {
                 if($user->id == $role->user_id || $user->is_admin ) {
                     return true;
                 }

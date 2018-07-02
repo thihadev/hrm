@@ -25,9 +25,6 @@ class DepartmentController extends Controller
             return redirect()->route('home');
         }
 
-
-        // $departments = Department::paginate(5);
-        // return view('Department.index', ['departments' => $departments]);
     }
 
     /**
@@ -37,7 +34,11 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        return view('Department.create');
+        if(Auth::user()->hasPermission("create-department")){  
+            return view('Department.create');
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -65,7 +66,8 @@ class DepartmentController extends Controller
      */
     public function show($id)
     {
-        //
+        alert()->error('Warning', "Request permission for this page.!");
+        return redirect()->route('home');
     }
 
     /**
@@ -76,8 +78,13 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        $departments = Department::find($id);
+        if(Auth::user()->hasPermission("update-department")){
+            $departments = Department::find($id);
         return view('Department.edit', compact("departments"));
+          }else{
+            alert()->error('Warning', "You Dont have permission for this page.!");
+            return redirect()->route('home');
+        }
 
     }
 
@@ -107,13 +114,18 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
+        if(Auth::user()->hasPermission("delete-department")){
         Department::find($id)->delete();
-        alert()->success('Successfully', 'Deleted Department', 'success');
+        alert()->success('Successfully', 'Deleted Department');
         return redirect()->route('dep.index');
+          }else{
+            return redirect()->route('home');
+        }
 
     }
 
-    private function validateInput($request) {
+    private function validateInput($request) 
+    {
         $this->validate($request, [
         'name' => 'required|max:60|unique:departments'
         ]);

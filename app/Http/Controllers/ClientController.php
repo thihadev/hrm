@@ -36,8 +36,12 @@ class ClientController extends Controller
      */
     public function create()
     {
+        if(Auth::user()->hasPermission("create-info")){   
         $clients = Client::all();
         return view("Client.create", compact("clients"));
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -48,6 +52,14 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
+        $request-> validate ([
+           'c_name' => 'required',
+            'c_email' => 'required',
+            'c_phone' => 'required|min:6|max:11',
+            'c_address' => 'required',
+            'c_web' => 'required'
+        ]);
+
         $clients = new Client();
         $clients->c_name = $request->c_name;
         $clients->c_email = $request->c_email;
@@ -80,8 +92,12 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
-        $clients = Client::find($id);
+        if(Auth::user()->hasPermission("update-info")){  
+        $clients = Client::findOrFail($id);
         return view("Client.edit", compact("clients"));
+         }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -115,25 +131,17 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
+        if(Auth::user()->hasPermission("delete-info")){  
         $clients = Client::find($id)->delete();
 
         alert()->success('Successfully', 'Client Deleted', 'success');
-        // Session::flash('danger', 'Your Client Info Deleted Successfully!');
+
         return redirect()->route('client.index');
+    }else{
+            return redirect()->route('home');
+        }
                         
     }
-
-    private function validateInput($request) {
-        $this->validate($request, [
-        'c_name' => 'required',
-        'c_email' => 'required',
-        'c_phone' => 'required',
-        'c_address' => 'required',
-        'c_web' => 'required'
-
-        ]);
-    }
-
 
     public function data(Request $request) {
 

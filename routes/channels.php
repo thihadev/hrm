@@ -16,6 +16,6 @@
 
 // });
 
-Broadcast::channel('chatroom', function ($user) {
+Broadcast::channel('chat', function ($user) {
   return Auth::check();
 });

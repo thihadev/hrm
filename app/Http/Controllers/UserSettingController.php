@@ -59,7 +59,7 @@ class UserSettingController extends Controller
      */
     public function show($id)
     {
-        //
+        return view("errors.404");
     }
 
     /**
@@ -70,10 +70,14 @@ class UserSettingController extends Controller
      */
     public function edit($id)
     {
-        $users = User::find($id);
+        if(Auth::user()->hasPermission("update-user")){    
+        $users = User::findOrFail($id);
         $userRole  = DB::select('select role_id from user_roles where user_id = :id', ['id' => $id]);
         $roles = Role::select('name', 'id')->get();
         return view('User.edit', compact("users", "userRole", "roles"));
+        }else{
+            return redirect()->route('home');
+        } 
     }
 
     /**
@@ -114,9 +118,15 @@ class UserSettingController extends Controller
      */
     public function destroy($id)
     {
+        if(Auth::user()->hasPermission("delete-user")){  
         User::find($id)->delete();
-        return redirect()->route('user.index')
-                        ->with('success', "User Deleted Successful");
+
+        alert()->success('Successfully', "User Account Deleted");
+        return redirect()->route('user.index');
+
+        }else{
+            return redirect()->route('home');
+        } 
     }
 
     public function data(Request $request) {

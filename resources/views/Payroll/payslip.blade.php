@@ -1,85 +1,97 @@
 @extends ('dashboard')
 
 @section('action-content')
-
+	<link href="/css/print.css" rel="stylesheet" media="print" type="text/css">
 <div class="page-wrapper">
-                <div class="content container-fluid">
-					<div class="row">
-						<div id="buttons" class="pull-right"></div>
-						<div class="col-xs-8">
-							<h2>Payslip</h2>
-						</div>
-						<div class="col-sm-4 text-right m-b-30">
-							<div class="btn-group btn-group-sm">
-								<div id="buttons" class="pull-right"></div>
-								<button class="btn btn-default">CSV</button>
-		
-								
-								<a target="_blank" href="{{route('payslip.print') }}" class="btn btn-default"><i class="fa fa-print fa-lg"></i> Print </a>
-							</div>
+    <div class="content container-fluid">
+		<div class="row">
+			<div id="buttons" class="pull-right"></div>
+				<div class="col-xs-8">
+					<h2>Payslip</h2>
+				</div>
+			<div class="col-sm-4 text-right m-b-30">
+				<div class="btn-group btn-group-sm">					
+							<i class="fa fa-print fa-lg"></i> Print </a>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="container" style="background-color: white;">
-								<h3 style="text-align: center;">Payslip for the month of {{\Carbon\Carbon::now()->format('F, Y')}}</h3>
-								<div class="row">
-									<div class="col-md-9 m-b-20">
-										<img src="/img/snow.png" style="width: 150px; ">
-										<ul class="list-unstyled" style="margin-left: 30px;">
-											<li>Snow Flake</li>
-											<li>Yangon</li>
-											<li>Web Developement</li>
-										</ul>
-									</div>
-									<div class="col-md-3 m-b-15">
-										<div class="invoice-details">
-											<h3 class="text-uppercase">Payslip #</h3>
-											<ul class="list-unstyled">
-												<li>Salary Month: <span>{{\Carbon\Carbon::now()->format('jS \\ F, Y')}}</span></li>
-											</ul>
-										</div>
-									</div>
-								</div><br>
-								<div class="row">
-									<div class="col-lg-12 m-b-20">
-										<ul class="list-unstyled">
-						 		
-								
-									
-										<li><h5 class="m-b-0"><strong>
-											Name: {{ $employees->name}}
-										</strong></h5></li>	
-										<li><span>Department : {{$departments->name}} </span></li>
-										<li><span>Designation : {{ $designations->name }} </span></li>
-										<li></li>
-									
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="container" style="background-color: white;">
+							<h3 style="text-align: center;">Payslip for the month of {{\Carbon\Carbon::now()->format('F, Y')}}</h3>
+						<div class="row">
+							<div class="col-md-9 m-b-20">
+								<img src="/img/snow.png" style="width: 150px; ">
+									<ul class="list-unstyled" style="margin-left: 30px;">
+										<li>Snow Flake</li>
+										<li>Yangon</li>
+										<li>Web Developement</li>
+									</ul>
+								</div>
+						<div class="col-md-3 m-b-15">
+							<div class="invoice-details">
+								<h3 class="text-uppercase">Payslip #00345</h3>
+									<ul class="list-unstyled">
+										<li>Salary Month: <span>{{\Carbon\Carbon::now()->format('jS \\ F, Y')}}</span></li>
+									</ul>
+								</div>
+							</div>
+						</div><br>
+						<div class="row">
+							<div class="col-lg-12 m-b-20">
+								<ul class="list-unstyled">
+						 			
+										<li><h4 class="m-b-0"><strong>
+											Name: Dummy Name  
+                                		</strong></h4></li>	                           	
+										<li><h4>Department : Dummy Department </h4></li>
+										<li><h4>Designation : Dummy Designation </h4></li>
 										</ul>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div>
-											<h4 class="m-b-10"><strong>Earnings</strong></h4>
-											<table class="table table-bordered">
-												<tbody>
-													<tr>
-														<td><strong>Basic Salary</strong> <span class="pull-right">{{ $employees->salary }}</span></td>
-													</tr>
+					<div class="row">
+						<div class="col-sm-6">
+							<div>
+								<h4 class="m-b-10"><strong>Earnings</strong></h4>
+									<table class="table table-bordered">
+										<tbody>
+											<tr>
+												<td>
+												<strong>Basic Salary</strong> <span class="pull-right">
+													1000000
+												</span> 
+												</td>
+											</tr>
+											<tr>
+												<td><strong> Over-Time </strong> <span class="pull-right">Yes</span>
+												</td>
+											</tr>		
+											<tr>
+												<td>
+													<strong> Hours </strong> 
+													<span class="pull-right">
+														2hours
+													</span>
+												</td>
+											</tr>		
 													
 													
-													<tr>
-														<td><strong>House Rent Allowance (H.R.A.)</strong> <span class="pull-right">$55</span></td>
-													</tr>
-													<tr>
-														<td><strong>Conveyance</strong> <span class="pull-right">$55</span></td>
-													</tr>
-													<tr>
-														<td><strong>Other Allowance</strong> <span class="pull-right">$55</span></td>
-													</tr>
-													<tr>
-														<td><strong>Total Earnings</strong> <span class="pull-right"><strong>$55</strong></span></td>
-													</tr>
+											<tr>
+												<td>
+												<strong> Pay Rate </strong> 
+													<span class="pull-right">
+													5000
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<strong>Total Earnings</strong> 
+												<span class="pull-right">
+												<strong>1010000</strong>
+												</span>
+												</td>
+											</tr>
 												</tbody>
 											</table>
 										</div>
@@ -99,50 +111,26 @@
 														<td><strong>ESI</strong> <span class="pull-right">$0</span></td>
 													</tr>
 													<tr>
-														<td><strong>Loan</strong> <span class="pull-right">$300</span></td>
+														<td><strong>Loan</strong> <span class="pull-right">$0</span></td>
 													</tr>
 													<tr>
-														<td><strong>Total Deductions</strong> <span class="pull-right"><strong>$59698</strong></span></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
+													<td><strong>Total Deductions</strong> <span class="pull-right"><strong>$0</strong></span></td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
-									<div class="col-md-12">
-						
-									</div>
+								</div>
+								<div class="col-md-12">
+					
 								</div>
 							</div>
 						</div>
 					</div>
-                </div>
-                @endsection
-                @push('scripts')
-<script>
-$(function() {
-      var buttons = new $.fn.dataTable.Buttons(table, {
-      buttons: [{
-      extend: 'copy',
-      title: 'Payroll Detail'
-        }, {
-      extend: 'csv',
-      filename: 'Payroll Detail'
-        }, {
-      extend: 'pdf',
-      title: 'Payroll Detail',
-      filename: 'Payroll Detail'
-        }, {
-      extend: 'excel',
-      title: 'Payroll Detail',
-      filename: 'Payroll Detail'
-        }, {
-      extend: 'print',
-      title: 'Payroll Detail',
-      filename: 'Payroll Detail'
-        }]
-    }).container().appendTo($('#buttons'));
-});
+				</div>
+               </div>
+           @endsection
 
-</script>
 
-@endpush
+
+
+              

@@ -31,6 +31,11 @@ class RoleSeeder extends Seeder
             'update-designation' => true,
             'create-designation' => true,
 
+            'show-payroll' => true,
+            'delete-payroll' => true,
+            'update-payroll' => true,
+            'create-payroll' => true,
+
             'show-user' => true,
             'delete-user' => true,
             'update-user' => true,
@@ -55,9 +60,12 @@ class RoleSeeder extends Seeder
             'update-designation' => true,
             'create-designation' => true,
 
+            'show-payroll' => true,
+            'update-payroll' => true,
+            'create-payroll' => true,
+
             'show-user' => true,
 
-            'show-dept' => true,
          ]
         ]);
 
@@ -69,11 +77,11 @@ class RoleSeeder extends Seeder
 
             'show-department' => true,
 
+            'show-payroll' => false,
+
             'show-designation' => true,
 
             'show-user' => false,
-
-            'show-dept' => false,
 
          ]
         ]);

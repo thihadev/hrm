@@ -43,13 +43,13 @@
                             <label for="c_phone" class="col-md-4 control-label">Client Phone</label>
 
                         <div class="col-md-7">
-                            <input id="c_phone" type="text" class="form-control" name="c_phone" value="{{ old('c_phone') }}" required autofocus>
+                            <input id="c_phone" type="number" class="form-control" name="c_phone" value="{{ old('c_phone') }}" required >
 
                             @if ($errors->has('c_phone'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('c_phone') }}</strong>
-                                    </span>
-                                @endif
+                                </span>
+                            @endif
                             </div>
                         </div>
 

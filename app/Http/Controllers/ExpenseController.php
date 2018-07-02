@@ -23,7 +23,11 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        return view("Expense.index", compact("expenses"));
+        if(Auth::user()->hasPermission("show-info")) {
+            return view("Expense.index", compact("expenses"));
+          }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -33,9 +37,13 @@ class ExpenseController extends Controller
      */
     public function create()
     {
-        $employees = Employee::all();        
-        $expenses = Expense::all();
-        return view('Expense.create', ['employees' => $employees, 'expenses' => $expenses]);
+        if(Auth::user()->hasPermission("create-info")) {
+            $employees = Employee::all();        
+            $expenses = Expense::all();
+            return view('Expense.create', ['employees' => $employees, 'expenses' => $expenses]);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -46,6 +54,15 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
+        $request-> validate ([
+            'user_id' => 'required',
+            'item' => 'required',
+            'purchase_from' => 'required',
+            'date_of_purchase' => 'required',
+            'amount' => 'required'
+
+        ]);
+
         $expenses = new Expense();
         $expenses->user_id = $request->user_id;
         $expenses->item = $request->item;
@@ -65,7 +82,7 @@ class ExpenseController extends Controller
      */
     public function show($id)
     {
-        //
+        return view("errors.404");
     }
 
     /**
@@ -76,11 +93,13 @@ class ExpenseController extends Controller
      */
     public function edit($id)
     {
-        $expenses = Expense::find($id);
-            // ->leftJoin('employees', 'expenses.user_id', '=', 'employees.id')
-            // ->select('expenses.*', 'employees.name as employee_name', 'employees.id as expenses.user_id');
+        if(Auth::user()->hasPermission("update-info")) {
+        $expenses = Expense::findOrFail($id);
         $employees = Employee::select('name', 'id')->get();
         return view('Expense.edit',['expenses' => $expenses, 'employees' => $employees]);
+    }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -114,19 +133,12 @@ class ExpenseController extends Controller
      */
     public function destroy($id)
     {
-        Expense::find($id)->delete();
-        return view("Expense.index");
-    }
-
-    private function validateInput($request) {
-        $this->validate($request, [
-        'user_id' => 'required',
-        'item' => 'required',
-        'purchase_from' => 'required',
-        'date_of_purchase' => 'required',
-        'amount' => 'required'
-
-        ]);
+        if(Auth::user()->hasPermission("delete-info")) {
+            Expense::findOrFail($id)->delete();
+            return view("Expense.index");
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     public function data(Request $request) {
@@ -134,7 +146,7 @@ class ExpenseController extends Controller
         if($request->ajax()) {
 
             $model = Expense::latest();
-             $model = DB::table('expenses') 
+            $model = DB::table('expenses') 
         ->leftJoin('employees', 'expenses.user_id', '=', 'employees.id')
         ->select('expenses.*', 'employees.name as employee_name', 'employees.id as user_id');
            

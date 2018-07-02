@@ -2,7 +2,7 @@
 
 @section('content')
 
-<form class="form-horizontal m-t-20" method="POST" action="{{ route('login') }}">
+    <form class="form-horizontal m-t-20" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
         <div class="form-group row {{ $errors->has('email') ? ' has-error' : '' }}">
                     <div class="col-12">
