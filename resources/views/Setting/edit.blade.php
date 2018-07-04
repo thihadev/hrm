@@ -23,7 +23,7 @@
                             <label for="address" class="col-md-4 control-label">Address</label>
 
                             <div class="col-md-6">
-                                <input id="address" type="text" class="form-control" name="address" value="{{ $settings->address }}" required autofocus>
+                                <textarea id="address" class="form-control" name="address" value="{{ $settings->address }}" required autofocus>{{ $settings->address }}</textarea>
                             </div>
                         </div>
 
@@ -39,7 +39,7 @@
                             <label for="about" class="col-md-4 control-label">About</label>
 
                             <div class="col-md-6">
-                                <input id="about" type="text" class="form-control" name="about" value="{{ $settings->about }}" required autofocus>
+                                <textarea id="about" class="form-control" name="about" value="" required autofocus>{{ $settings->about }}</textarea>
 
                             </div>
                         </div>
